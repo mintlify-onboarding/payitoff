@@ -1,0 +1,102 @@
+---
+title: "Borrower"
+description: "Payitoff API: Borrower Schema"
+---
+
+> 🚧
+> 
+> Use [BorrowerPayload](/docs/borrower-payload-schema) for API `POST`, `PUT`, and `PATCH` requests
+> 
+> For historical reasons, the request payload required when creating and updating a `Borrower` via our v1 API has a different shape than the response object. Thus, you must use a [BorrowerPayload](/docs/borrower-payload-schema) for your API request payloads, and expect a `Borrower` object as the response.
+> 
+> This discrepancy will be corrected in API v2.
+
+> 📘
+> 
+> Always save the `Borrower.id` **and** `Borrower.uuid` to your systems
+> 
+> Borrowers have both an `id` and `uuid`. These are largely interchangeable in the API, and you'll see that our documentation and examples reflect passing `Borrower.id` in API calls. 
+> 
+> However, you should always save the `Borrower.uuid` value, as Nexus **requires** the `uuid` value, and **will not** work if supplied with a `Borrower.id` value.
+
+> 👍
+> 
+> When you use [Nexus.link](/docs/nexus-link), we'll fill in data for you!
+> 
+> Normally, a `Borrower` returned from our API will only include the information you've provided when you create or update the `Borrower` record. However, when you use Nexus to link `Borrowers` and `Servicers`, we'll include the `first_name`, `last_name`, `address`, `phone`, and `email` we've collected from their `Servicers` when possible.
+
+#### Schema Definition
+
+| Property                 | Type    | Format                                                                                 | Description                                                                                                                                                                                                                                                                  |
+| ------------------------ | ------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| address                  | object  | [Address](/docs/address-schema)                                                        | An Address object.                                                                                                                                                                                                                                                           |
+| collecting\_unemployment | boolean | Is this person collecting unemployment?_Defaults tofalse._**Required for Enrollment.** |                                                                                                                                                                                                                                                                              |
+| created\_at              | string  | date-time                                                                              | A DateTime value indicating when the Borrower was created.                                                                                                                                                                                                                   |
+| email                    | string  | email                                                                                  | The Borrower's email address.                                                                                                                                                                                                                                                |
+| employer                 | string  | If Borrower is employed, the name of their employer.                                   |                                                                                                                                                                                                                                                                              |
+| employer\_start\_date    | string  | date                                                                                   | If Borrower is employed, date on which they began working for their employer.                                                                                                                                                                                                |
+| financial\_details       | object  | [FinancialDetails](/docs/financial-details-schema)                                     | A FinancialDetails object.                                                                                                                                                                                                                                                   |
+| first\_name              | string  | Borrower first name.                                                                   |                                                                                                                                                                                                                                                                              |
+| id                       | integer | int64                                                                                  | The unique ID value that identifies a Borrower. Should be saved to your database and used when fetching and updating details via API.                                                                                                                                        |
+| income\_certifications   | array   | items: [IncomeCertification](/docs/income-certification-schema)                        | An array of IncomeCertification file uploads—can be pay stubs, tax returns, or unemployment Determination Summaries.**NOTE:** We only use the most recently uploaded IncomeCertification. See [IncomeCertification](/docs/income-certification-schema) for more information. |
+| last\_name               | string  | Borrower last name.                                                                    |                                                                                                                                                                                                                                                                              |
+| occupation               | string  | Borrower occupation.                                                                   |                                                                                                                                                                                                                                                                              |
+| phone                    | string  | Borrower phone number.                                                                 |                                                                                                                                                                                                                                                                              |
+| student                  | boolean | Is Borrower currently a student?_Defaults to false._                                   |                                                                                                                                                                                                                                                                              |
+| unemployed               | boolean | Is this person unemployed?_Defaults to false._**Required for Enrollment.**             |                                                                                                                                                                                                                                                                              |
+| updated\_at              | string  | date-time                                                                              | A DateTime value indicating when the Borrower was last updated.                                                                                                                                                                                                              |
+| uuid                     | string  | uuid                                                                                   | A UUID value that identifies a Borrower._Should be saved to your database and used when initializing Nexus._                                                                                                                                                                 |
+
+#### Example
+
+Borrower
+
+`{
+  "address": {
+    "city": "North Enid",
+    "state": "OK",
+    "street1": "05700 Moises Mountains",
+    "street2": "Apt. 402",
+    "street3": null,
+    "zipcode": "92192"
+  },
+  "collecting_unemployment": false,
+  "created_at": "2021-02-18T17:32:54.744842Z",
+  "email": "[[email protected]](/cdn-cgi/l/email-protection)",
+  "employer": "City Of Albemarle",
+  "employer_start_date": "2015-12-10",
+  "financial_details": {
+    "agi": 45500.44,
+    "children": 1,
+    "dependents": 0,
+    "employer_state": null,
+    "extra_monthly_payment": 0.00,
+    "family_size": 2,
+    "filing_status": "single",
+    "income_growth": null,
+    "new_borrower_date": null,
+    "pslf": null,
+    "refinance_rate": null,
+    "refinance_term": null,
+    "related_to_major": null,
+    "spouse_agi": 24000.00,
+    "state_of_residence": "NV",
+    "tcli_enabled": null,
+    "tcli_end_year": null,
+    "tcli_start_year": null,
+    "teaching_level": null,
+    "teaching_state": null,
+    "teaching_subject": null
+  },
+  "first_name": "Genesis",
+  "id": 1569,
+  "income_certifications": [],
+  "last_name": "Bartoletti",
+  "occupation": null,
+  "phone": "913-733-3917",
+  "student": false,
+  "unemployed": false,
+  "updated_at": "2021-02-18T17:32:54.744842Z",
+  "uuid": "dc6e109b-ad95-4f79-83a3-85ea55981feb"
+}
+`

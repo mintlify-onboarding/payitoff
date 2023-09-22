@@ -1,0 +1,31 @@
+---
+title: "Address"
+description: "Payitoff API: Address Schema"
+---
+
+The `Address` schema allows for up to 3 lines to format a street address, plus `city`, `state` and `zipcode` values.
+
+#### Schema Definition
+
+| Property | Type   | Format                                                 | Description               |
+| -------- | ------ | ------------------------------------------------------ | ------------------------- |
+| street1  | string | First line of street address.                          |                           |
+| street2  | string | Second line of street address.                         |                           |
+| street3  | string | Third line of street address.                          |                           |
+| city     | string | City name                                              |                           |
+| state    | string | maxLength: 2                                           | Two-letter US state code. |
+| zipcode  | string | Postal zipcode. May be 5-digit format or 5 + 4 format. |                           |
+
+#### Example
+
+Address
+
+`{
+  "city": "North Enid",
+  "state": "OK",
+  "street1": "05700 Moises Mountains",
+  "street2": "Apt. 402",
+  "street3": null,
+  "zipcode": "92192"
+}
+`

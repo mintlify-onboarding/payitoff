@@ -1,0 +1,23 @@
+---
+title: "RepaymentPlanSummary"
+description: "Payitoff API: RepaymentPlanSummary Schema"
+---
+
+An [Enrollment](/docs/enrollment-schema) object will always include a `RepaymentPlanSummary` object under the `repayment_plan` property.
+
+#### Schema Definition
+
+| Property    | Type   | Format                                                                               | Description                                                                             |
+| ----------- | ------ | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| description | string | The full human-readable name of the IDR Plan a Borrower has asked to be enrolled in. |                                                                                         |
+| type        | string | savepayerepayeibrnew\_ibricr                                                         | An abbreviated code that indicates the IDR Plan a Borrower has asked to be enrolled in. |
+
+#### Example
+
+RepaymentPlanSummary
+
+`{
+  "description": "Pay As You Earn Repayment Plan",
+  "type": "paye"
+}
+`

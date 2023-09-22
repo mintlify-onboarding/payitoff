@@ -1,0 +1,30 @@
+---
+title: "AutopayPayload"
+description: "Payitoff API: AutopayPayload Schema"
+---
+
+Used to [activate](/reference/activate-autopay) or [deactivate](/reference/deactivate-autopay) autopay using a `SourceAccount` at a `Servicer`. 
+
+**NOTE:** The following fields are required:
+
+* `servicer_id`
+* `source_account_id`
+
+#### Schema Definition
+
+Properties in **bold** are required.
+
+| Property                | Type   | Format | Description                                   |
+| ----------------------- | ------ | ------ | --------------------------------------------- |
+| **servicer\_id**        | string | uuid   | A UUID value that identifies a Servicer.      |
+| **source\_account\_id** | string | uuid   | A UUID value that identifies a SourceAccount. |
+
+#### Example
+
+AutopayPayload
+
+`{
+  "servicer_id": "781d1f0c-e895-4592-80d9-6915bef4e61d",
+  "source_account_id": "646cec59-1c6e-43b1-af16-028bd34546cd"
+}
+`

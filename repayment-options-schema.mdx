@@ -1,0 +1,64 @@
+---
+title: "RepaymentOptions"
+description: "Payitoff API: RepaymentOptions Schema"
+---
+
+When you query our [Get Repayment Options](/reference/get-repayment-options) API endpoint, you'll receive a JSON response object with an `array` of [RepaymentOption](/docs/repayment-option-schema) objects, alongside an [OriginalLoanSummary](/docs/original-loan-summary-schema) 
+
+#### Schema Definition
+
+| Property           | Type   | Format                                                    | Description                                                                                                            |
+| ------------------ | ------ | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| original           | object | [OriginalLoanSummary](/docs/original-loan-summary-schema) | Summary of original loan details against which you'd compare RepaymentOption objects for which a Borrower is eligible. |
+| repayment\_options | array  | [RepaymentOption](/docs/repayment-option-schema)          | An array of available RepaymentOption objects for which a Borrower and their Loans may be eligible.                    |
+
+#### Example
+
+RepaymentOptions
+
+`{
+  "original": {
+    "amount_forgiven": 0.00,
+    "estimated_tax_liability": 0.00,
+    "final_monthly_payment": 0.00,
+    "monthly_payment": 0.00,
+    "number_of_payments": 0,
+    "outstanding_interest": 0.00,
+    "outstanding_principal": 0.00,
+    "total_cost": 0.00,
+    "total_paid": 0.00
+  },
+  "repayment_options": [
+    {
+      "action_items": [],
+      "amount_forgiven": 0,
+      "annual_snapshots": [],
+      "eligible_loans": [],
+      "estimated_tax_liability": 0,
+      "final_monthly_payment": 0,
+      "ineligible_loans": [],
+      "ineligible_reasons": [
+        "No partial financial hardship",
+        "New Borrower Date is required",
+        "Qualifying PAYE requires Adjusted Gross Income",
+        "Qualifying PAYE requires Residence",
+        "Qualifying PAYE requires Family Size",
+        "No eligible loans"
+      ],
+      "name": "Income-Based (2009)",
+      "number_of_payments": 0,
+      "pslf_eligible": true,
+      "repayment_plan": {
+        "description": "Income Based Repayment Plan (2009)",
+        "idr": true,
+        "name": "IBR",
+        "type": "ibr"
+      },
+      "scheduled_monthly_payment": 0,
+      "starting_monthly_payment": 0,
+      "total_cost": 0,
+      "total_paid": 0
+    }
+  ]
+}
+`

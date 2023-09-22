@@ -1,0 +1,35 @@
+---
+title: "IncomeCertification"
+description: "Payitoff API: IncomeCertification Schema"
+---
+
+We currently support uploading only a _single_ `IncomeCertification` at a time. If multiple `IncomeCertifications` are uploaded over subsequent requests, we will only use the _most recent_ `IncomeCertification` for Assessment operations and `Borrower` responses.
+
+We want to support a future use case where multiple `IncomeCertifications` may be uploaded and a subset of those documents chosen by a `Borrower` as the documentation to submit with their IDR Enrollment Request. To avoid changes to the API in the future, this is why a `Borrower` response provides the `income_certifications` property as an array.
+
+> 🚧
+> 
+> Use [IncomeCertificationPayload](/docs/income-certification-payload-schema) for API `POST`, `PUT`, and `PATCH` requests
+> 
+> When creating and updating a `Borrower` with supporting Income Certification document(s), you must use an [IncomeCertificationPayload](/docs/income-certification-payload-schema) as your payload in the _singular_ `income_certification` property of a [BorrowerPayload](/docs/borrower-payload-schema) payload.
+> 
+> When a `Borrower` is returned by the API, the `Borrower` object will hold a _plural_ `income_certifications` property with `IncomeCertification`(s) within.
+
+#### Schema Definition
+
+| Property     | Type    | Format                                     | Description                                                                                          |
+| ------------ | ------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| id           | integer | int64                                      | The ID value of the IncomeCertification file uploaded for a Borrower.                                |
+| inserted\_at | string  | date-time                                  | A DateTime string that indicates when the IncomeCertification was first uploaded to our API.         |
+| type         | string  | pay\_stubtax\_returndetermination\_summary | The type of supporting income/unemployment documentation uploaded for Enrollment or recertification. |
+
+#### Example
+
+IncomeCertification
+
+`{
+  "id": 198,
+  "inserted_at": "2021-02-18 21:33:29",
+  "type": "tax_return"
+}
+`

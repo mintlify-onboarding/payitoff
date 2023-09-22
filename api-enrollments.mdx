@@ -1,0 +1,77 @@
+---
+title: "Enrollments"
+description: "All you need to know about Enrollments"
+---
+
+Enrollment is a key feature that lets Partners enroll their qualifying users in Income-Driven Repayment plans chosen from the [Repayment Options](/reference/get-repayment-options) API endpoint. Additional information about the Borrower must be sent in with the request to create an Enrollment, and a valid income certification for the Borrower must have already been provided via the Borrower create/update endpoints if the borrower has income. 
+
+#### Requirements to Enroll
+
+For an `Enrollment` to be created, several preconditions must be met:
+
+* the `Borrower` must have [Loans](/docs/api-loans)
+* `Borrower.ssn` must have been provided in a create/update API request
+* `Borrower.phone` must have been provided in a create/update API request
+* an [Address](/docs/address-schema) for the Borrower must have been provided (at least `street1`, `city`, `state`, and `zipcode`)
+* an [IncomeCertification](/docs/income-certification-schema) must have been provided unless the borrower is both `unemployed` and **not** `collecting_unemployment`
+* the `Borrower` **must not** be an active student (FULL TIME or THREE QUARTER TIME)
+* `marital_status` will default to `single` but should be updated to reflect a more appropriate value if this status is incorrect. See the [BorrowerPayload](/docs/borrower-payload-schema) for possible values.
+
+**NOTE:** If one or more of these preconditions is not met, calls to [Create an Enrollment](/reference/create-enrollment) will return a `409 Conflict` response.
+
+##### Married Enrollments
+
+In order to submit a `married enrollment`, you must have both a `borrower` and a `spouse` record created. See the [Borrower Assessment with Spouse guide](/docs/api-borrowers#spouses) for direction on how to set up a `spouse` and include the minimum amount of data needed for running an assessment. When you want to `Enroll`, if the `spouse` record has only the minimum amount of data required by the `Assessment` endpoint and the `spouse` has federal loans, you will need to make sure that you first update these fields on the `spouse` before attempting to enroll.
+
+* `ssn`
+* `first_name`
+* `last_name`
+* `date_of_birth`
+* `marital_status` \- update this value to match the primary `borrower`
+
+#### Loan Servicers
+
+All `Loans` on the primary `borrower`must have a supported `servicer_name` to be eligible for and included in an IDR Enrollment. Only federally-backed loans may have their repayment plans changed via this enrollment process. Private loans will be excluded from any Enrollment request. The request is transmitted to the loans' Servicer(s), so we cannot process enrollments unless a servicer has been provided for each loan. The supported federal servicers are:
+
+* Cornerstone
+* Fedloan
+* Granite State
+* Great Lakes
+* HESC
+* Mohela
+* Naviet
+* Nelnet
+* OSLA
+
+Loans without a servicer will not be enrolled in the plan!
+
+#### Repayment Plans
+
+Every `Enrollment` must identify the `repayment_plan` a `Borrower` wishes to enroll in. The `repayment_plan` must be one of the supported IDR plans:
+
+* `save`
+* `paye`
+* `repaye` [replaced](https://studentaid.gov/announcements-events/save-plan) by `save`
+* `ibr`
+* `new_ibr`
+* `icr`
+
+These strings correspond to the `repayment_plan.type` attribute found on a [RepaymentOption](/docs/repayment-option-schema) returned from the [Repayment Options](/reference/get-repayment-options) endpoint. There is only one `ibr` plan currently offered, but it has different terms depending on when the borrower first took out a loan—hence the `2009` and `2014` distinctions. This endpoint will accept either `ibr` (2009) or `new_ibr` (2014) and funnel those into a single `ibr` option to streamline the workflow of passing results from [Repayment Options](/reference/get-repayment-options) into here.
+
+#### Signatures
+
+Passing `"signature": true` is our confirmation that a Partner (that's you!) has obtained the necessary permissions from a `Borrower` to make enrollment filings on their behalf. Partners are responsible for obtaining this permission from their borrowers. Usually a brief line of text near the submission button indicating to the effect of "by clicking Submit you authorize us and our affiliates to request the necessary changes to your Repayment Plan." But don't just copy that! Be sure to consult your lawyer first. This request will return a `422 Unprocessable Entity` if the signature param is `false` or omitted.
+
+#### Unprocessable Enrollments
+
+Sometimes, our internal review catches enrollments that should not be processed. This could be because of a large discrepancy between a borrower's reported AGI and the AGI on their supplied Income Certification, or perhaps the borrower requested enrollment in a plan that raises their monthly payment, total cost, and repayment term (ie, it's an all-around worse plan). In that case, we mark an enrollment as `unprocessable`. This is very similar to the `cancelled` status, with the difference being who is taking the action—only a `Borrower` may cancel an enrollment, whereas a Payitoff administrator marks an enrollment as `unprocessable`.
+
+#### Previewing Enrollment forms
+
+The [Enrollment Preview](/reference/get-enrollment-preview) endpoint generates a URL which contains an unsigned copy of a borrower's `Enrollment` Request form in PDF format. _Unsigned_ here means the borrower's signature **is not** applied to the document. You can present this form to the borrower for their records or to facilitate manual processing of an IDR application. For security reasons, the URL will expire after **10 minutes**.
+
+**NOTE:** This form is intended for borrowers to preview. The bundle contains highly sensitive information, including the borrower's Social Security Number and Income Certification (eg tax returns). Precautions must be taken so the form is only revealed to appropriate parties.
+
+#### Canceling Enrollments
+
+An `Enrollment` that's in the `pending` status may be cancelled. This is useful in case the borrower has made a mistake and wants to undo the request. However, there's a limited window where this is possible- generally **24-48** hours after creating the `Enrollment`. Attempting to cancel a request after this window will result in a `409 Conflict` response.

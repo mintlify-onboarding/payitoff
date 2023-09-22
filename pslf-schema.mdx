@@ -1,0 +1,52 @@
+---
+title: "PSLF"
+description: "Payitoff API:  PSLF Schema"
+---
+
+The `PSLF` schema provides details about Public Service Loan Forgiveness contributions.
+
+#### Schema Definition
+
+| Property                          | Type    | Format                                                                          | Description                                                                                  |
+| --------------------------------- | ------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| eligible\_payments                | integer | int32                                                                           | The number of eligible payments that have been made to this PortfolioLoan.                   |
+| expected\_forgiveness\_date       | string  | date                                                                            | The estimated date of the forgiveness event for this PortfolioLoan.                          |
+| ineligible\_payment\_details      | array   | type: objectformat: [IneligiblePayment](/docs/ineligible-payment-schema)        | An object that identifies the payment and why it is ineligible.                              |
+| ineligible\_payments              | integer | int32                                                                           | The number of ineligible payments that have been made to this PortfolioLoan.                 |
+| non\_qualifying\_payment\_details | array   | type: objectformat: [NonQualifyingPayment](/docs/non-qualifying-payment-schema) | An object that identifies the payment and why it doesn't yet qualify.                        |
+| non\_qualifying\_payments         | integer | int32                                                                           | The number of non-qualifying payments that have been made to this PortfolioLoan.             |
+| qualifying\_payments              | integer | int32                                                                           | The number of qualifying payments that have been made to this PortfolioLoan.                 |
+| remaining\_payments               | integer | int32                                                                           | The number of payments remaining before reaching a forgiveness event for this PortfolioLoan. |
+
+#### Example
+
+PSLF
+
+`{
+  "eligible_payments": 78,
+  "expected_forgiveness_date": "2025-06-01",
+  "ineligible_payment_details": [
+    {
+      "denial_reason": "You Do Not Have A Bill Due For This Payment Period",
+      "description": "In order for a payment to qualify, it must have been a payment you were required to make.\nYou were not required to make any payments during the following periods:\nIn your grace period\nIn a deferment \nIn a forbearance",
+      "period": "04/2019"
+    }
+  ],
+  "ineligible_payments": 1,
+  "non_qualifying_payment_details": [
+    {
+      "description": "This payment period is eligible but requires approved employment in order to qualify.",
+      "period": "05/2021",
+      "status": "Employment Not Certified"
+    },
+    {
+      "description": "This payment period is eligible but requires approved employment in order to qualify.",
+      "period": "04/2021",
+      "status": "Employment Not Certified"
+    }
+  ],
+  "non_qualifying_payments": 2,
+  "qualifying_payments": 76,
+  "remaining_payments": 51
+}
+`

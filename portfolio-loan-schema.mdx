@@ -1,0 +1,119 @@
+---
+title: "PortfolioLoan"
+description: "Payitoff API: PortfolioLoan Schema"
+---
+
+A `PortfolioLoan` is a rich object that describes a borrower's student loan portfolio in more accurate detail than ever. For `v1.0.1`, we're releasing an early preview of loan aggregation data, and we will continue to enrich the `PortfolioLoan` data in upcoming releases.
+
+#### Schema Definition
+
+| Property                   | Type           | Format                                                                               | Description                                                                                                                                                                                                                                                     |
+| -------------------------- | -------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| account\_number            | string         | The borrower's account number for a PortfolioLoan, if known.                         |                                                                                                                                                                                                                                                                 |
+| created\_at                | string         | date-time                                                                            | A DateTime string indicating when this Loan was created.                                                                                                                                                                                                        |
+| disbursement\_dates        | array          | type: stringformat: date                                                             | An array of dates on which funds were disbursed to a Borrower.                                                                                                                                                                                                  |
+| id                         | string         | uuid                                                                                 | A unique UUID identifier for this PortfolioLoan.                                                                                                                                                                                                                |
+| interest\_rate             | object         | [InterestRate](/docs/interest-rate-schema)                                           | An object that describes a loan's interest rate.                                                                                                                                                                                                                |
+| monthly\_payment           | object         | [MonthlyPayment](/docs/monthly-payment-schema)                                       | An object describing all known details about a loan's monthly payment.                                                                                                                                                                                          |
+| origination                | object         | [Origination](/docs/origination-schema)                                              | An object that describes the details of a loan's origination.                                                                                                                                                                                                   |
+| outstanding\_interest      | string         | decimal                                                                              | Total unpaid interest.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision.                                                                                                                                          |
+| outstanding\_principal     | string         | decimal                                                                              | Total unpaid principal.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision.                                                                                                                                         |
+| payment\_group\_id         | string or null | uuid                                                                                 | A unique UUID identifying the [PaymentGroup](/docs/payment-group-schema) this PortfolioLoan belongs to, if any.**NOTE:** Defaults to **null**. If present, you will find PaymentGroup details in the payment\_groups property of this PortfolioLoan's servicer. |
+| payment\_reference\_number | string or null | The account number needed to direct payments to the group that this loan belongs to. |                                                                                                                                                                                                                                                                 |
+| payoff                     | object         | [Payoff](/docs/payoff-schema)                                                        | An object providing a payoff amount and when it expires.                                                                                                                                                                                                        |
+| pslf                       | object         | [PSLF](/docs/pslf-schema)                                                            | An object describing any Public Servicer Loan Forgiveness contributions.                                                                                                                                                                                        |
+| repayment\_plan            | object         | [PortfolioRepaymentPlan](/docs/portfolio-repayment-plan-schema)                      | An object describing the loan's Repayment Plan.                                                                                                                                                                                                                 |
+| servicer                   | object         | [Servicer](/docs/servicer-schema)                                                    | An object describing the financial institution that services the loan, to whom a Borrower makes monthly payments.                                                                                                                                               |
+| status                     | object         | [LoanStatus](/docs/loan-status-schema)                                               | An object describing a loan's official status.                                                                                                                                                                                                                  |
+| type                       | object         | [LoanType](/docs/loan-type-schema)                                                   | An object describing a loan's official type.                                                                                                                                                                                                                    |
+| updated\_at                | string         | date-time                                                                            | A DateTime string indicating when this PortfolioLoan was last updated.                                                                                                                                                                                          |
+
+#### Example
+
+PortfolioLoan
+
+`{
+  "account_number": "928374299",
+  "created_at": "2021-03-03T17:01:24.108424Z",
+  "disbursement_dates": [
+    "2020-03-09"
+  ],,
+  "id": "df6a5264-1081-4494-bf04-ee4139ad82d3",
+  "interest_rate": {
+    "effective": "3.54",
+    "original": "3.54"
+  },
+  "monthly_payment": {
+    "scheduled_amount": "427.96"
+  },
+  "origination": {
+    "amount": "8575.99",
+    "date": "2022-02-09"
+  },
+  "outstanding_interest": "834.99",
+  "outstanding_principal": "696.19",
+  "payment_group_id": "f7498357-844d-4d0e-a0e9-573003cada13",
+  "payment_reference_number": null,
+  "payoff": {
+    "quote": 9057.05,
+    "quote_date": "05/28/2021"
+  },
+  "pslf": {
+    "eligible_payments": 78,
+    "expected_forgiveness_date": "2025-06-01",
+    "ineligible_payment_details": [
+      {
+        "denial_reason": "You Do Not Have A Bill Due For This Payment Period",
+        "description": "In order for a payment to qualify, it must have been a payment you were required to make.\nYou were not required to make any payments during the following periods:\nIn your grace period\nIn a deferment \nIn a forbearance",
+        "period": "04/2019"
+      }
+    ],
+    "ineligible_payments": 1,
+    "non_qualifying_payment_details": [
+      {
+        "description": "This payment period is eligible but requires approved employment in order to qualify.",
+        "period": "05/2021",
+        "status": "Employment Not Certified"
+      },
+      {
+        "description": "This payment period is eligible but requires approved employment in order to qualify.",
+        "period": "04/2021",
+        "status": "Employment Not Certified"
+      }
+    ],
+    "non_qualifying_payments": 2,
+    "qualifying_payments": 76,
+    "remaining_payments": 51
+  },
+  "repayment_plan": {
+    "description": "Pay As You Earn Repayment Plan",
+    "income_driven_repayment": true,
+    "type": "paye"
+  },
+  "servicer": {
+    "address": {
+          "street1": "123 Main St",
+          "street2": "Suite 501",
+          "street3": null,
+          "city": "Poughkeepsie",
+          "state": "NY",
+          "zipcode": "12345-6789"
+    },
+    "name": "Great Lakes"
+  },
+  "status": {
+    "code": "FB",
+    "description": "Forbearance"
+  },
+  "type": {
+    "code": "D2",
+    "description": "Direct Stafford Unsubsidized Loan",
+    "federal": true,
+    "guarantor": "Department of Education",
+    "lender": "Department of Education",
+    "subsidized": false,
+    "sula_eligible": false
+  },
+  "updated_at": "2021-03-03T17:01:24.108424Z"
+}
+`

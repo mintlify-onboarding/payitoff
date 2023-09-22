@@ -1,0 +1,31 @@
+---
+title: "EnrollmentPreview"
+description: "Payitoff API: EnrollmentPreview Schema"
+---
+
+Requests to the [Enrollment Preview endpoint](/reference/get-enrollment-preview) you will receive an `EnrollmentPreview` object as response.
+
+An `EnrollmentPreview` includes a generated URL to an unsigned copy of a `Borrower`'s `Enrollment` Request form in PDF format. _Unsigned_ here refers to the borrower's signature not being applied to the document. You can present this form to your `Borrower` for their records, or to facilitate manual processing of an IDR application. For security reasons, the URL will expire after **10 minutes**. We provide the expiration time (in UTC) in the payload for your convenience. The URL is regenerated upon each API call but does not invalidate previous URLs. In other words, if you hit this endpoint twice, the first URL will remain accessible for 10 minutes.
+
+> ❗️
+> 
+> Highly Sensitive Information
+> 
+> This form is intended for borrowers to preview the form we will send to their Servicer(s) on their behalf. The bundle contains _highly sensitive information_, including the borrower's Social Security Number, [IncomeCertification](/docs/income-certification-schema) (_e.g._, tax returns or pay stubs), contact information, and more. **Precautions must be taken so the form is only revealed to appropriate parties.**
+
+#### Schema Definition
+
+| Property    | Type   | Format                                            | Description                                             |
+| ----------- | ------ | ------------------------------------------------- | ------------------------------------------------------- |
+| url         | string | The generated URL to an unsigned Enrollment form. |                                                         |
+| expires\_at | string | date-time                                         | When the url expires (10 minutes from time of request). |
+
+#### Example
+
+EnrollmentPreview
+
+`{
+  "url": "string",
+  "expires_at": "2021-02-22T17:56:08.565Z"
+}
+`

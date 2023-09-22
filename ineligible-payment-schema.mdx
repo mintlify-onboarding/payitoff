@@ -1,0 +1,25 @@
+---
+title: "IneligiblePayment"
+description: "Payitoff API:  IneligiblePayment Schema"
+---
+
+The `IneligiblePayment` schema describes the reasons for a PSLF payment's ineligibility.
+
+#### Schema Definition
+
+| Property       | Type   | Format                                                      | Description |
+| -------------- | ------ | ----------------------------------------------------------- | ----------- |
+| denial\_reason | string | A short form explanation of why this payment is ineligible. |             |
+| description    | string | A long form explanation of why this payment is ineligible.  |             |
+| period         | sting  | The month and year that the payment was made.               |             |
+
+#### Example
+
+IneligiblePayment
+
+`{
+  "denial_reason": "You Do Not Have A Bill Due For This Payment Period",
+  "description": "In order for a payment to qualify, it must have been a payment you were required to make.\nYou were not required to make any payments during the following periods:\nIn your grace period\nIn a deferment \nIn a forbearance",
+  "period": "04/2019"
+}
+`

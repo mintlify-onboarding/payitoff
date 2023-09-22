@@ -1,0 +1,33 @@
+---
+title: "LoanType"
+description: "Payitoff API: LoanType Schema"
+---
+
+#### Schema Definition
+
+| Property       | Type    | Format                                                                                                   | Description |
+| -------------- | ------- | -------------------------------------------------------------------------------------------------------- | ----------- |
+| code           | string  | The official federal code that indicates the type of a loan.                                             |             |
+| description    | string  | The official federal description of the type of a loan.                                                  |             |
+| federal        | boolean | Is this a federal loan?                                                                                  |             |
+| guarantor      | string  | The institution who guarantees a loan will be paid in the event a student borrower defaults on the loan. |             |
+| lender         | string  | The institution that originally funded a loan.                                                           |             |
+| subsidized     | boolean | Is this loan subsidized by the federal government?                                                       |             |
+| sula\_eligible | boolean | Is this loan SULA eligible?                                                                              |             |
+
+#### Example
+
+LoanType
+
+`{
+  "code": "D2",
+  "description": "Direct Stafford Unsubsidized Loan",
+  "federal": true,
+  "guarantor": "Department of Education",
+  "lender": "Department of Education",
+  "subsidized": false,
+  "sula_eligible": false
+}
+`
+
+[Click here for the complete list of possible Loan Type code & description values](/docs/loan-types)

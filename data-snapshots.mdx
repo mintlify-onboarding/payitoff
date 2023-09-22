@@ -1,0 +1,52 @@
+---
+title: "Using Data Snapshots"
+description: "Use curated data for predictable results."
+---
+
+Requests made in our Sandbox environment do not go through to the actual `servicers`. Instead, they return some form of dummy data. It is likely that there will be times you will want the dummy data set up to put the `borrower` in a position to see benefit from IDR plans. In order to guarantee that you will see the benefit, we have curated a set of snapshots for select `servicers` for use with [Link](/docs/nexus-link), [Assess](/docs/nexus-assess), and [Enroll](/docs/nexus-enroll) workflows. Using any username and password you want will still return dummy data but Snapshots are helpers to set up specific scenarios. Using them is not required.
+
+### Using the Snapshots
+
+In order to use the snapshots, simply choose a supported `servicer` and use the special name that forces the scenario. Depending on which workflow you are testing, you may also need to use specific values to questions to get the desired result. See each section below for the details of setting up the data.
+
+#### Supported Servicers
+
+* Aidvantage
+* American Education Services
+* MOHELA
+* Nelnet
+
+#### Special Names
+
+<Note>
+    **Please Note**
+
+    **Snapshot names are case sensitive.**
+</Note>
+
+##### taylor
+
+The `taylor` snapshot will set the `borrower` up with loans on a `standard` plan, which will benefit from enrolling in an IDR plan.
+
+When Linking - 
+
+* Choose one of the supported `servicers` from the list above.
+* Enter `taylor` as the `username`.
+* Enter anything as the `password`.
+
+When using [Assess](/docs/nexus-assess), and [Enroll](/docs/nexus-enroll)
+
+* Choose one of the supported `servicers` from the list above.
+* Enter `taylor` as the `username`.
+* Enter anything as the `password`.
+* For `tax filing status` enter `single`.
+* For `agi` enter `35000`.
+* For `number of children` enter `0`.
+* For `number of non-child dependents` enter `0`.
+
+<Note>
+    **Please Note**
+
+    * **You may use between one supported `servicer` and up to all supported `servicers` with this special name in a single [Link](/docs/nexus-link), [Assess](/docs/nexus-assess), or [Enroll](/docs/nexus-enroll).**
+    * **Entering different values other than what's listed above for `tax filing status`, `agi`, `number of children`, and `number of non-child dependents` will yield varying results.**
+</Note>    

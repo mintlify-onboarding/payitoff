@@ -1,0 +1,23 @@
+---
+title: "Payoff"
+description: "Payitoff API:  Payoff Schema"
+---
+
+The `Payoff` schema provides a loan payoff quote and the date it is valid through.
+
+#### Schema Definition
+
+| Property    | Type   | Format  | Description                                                                                                                            |
+| ----------- | ------ | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| quote       | string | decimal | The amount needed to payoff this loan.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision. |
+| quote\_date | string | date    | The date the payoff amount must be received by.                                                                                        |
+
+#### Example
+
+Payoff
+
+`{
+  "quote": "45685.22",
+  "quote_date": "2021-10-14"
+}
+`

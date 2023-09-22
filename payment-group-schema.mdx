@@ -1,0 +1,37 @@
+---
+title: "PaymentGroup"
+description: "Payitoff API: PaymentGroup Schema"
+---
+
+A `PaymentGroup` is a collection into which some Servicers organize borrower Loans. These groups are _very_ Servicer-specific. Some Servicers will group loans by loan type, others by federal student loan programs, and still others by a combination of factors like type, interest rate, disbursements, and more.
+
+> 📘
+> 
+> A `PaymentGroup` often provides the most accurate data for highly important properties—such as monthly payment, past due amounts, fees, transaction amounts, and more. Take particular note of the `monthly_payment.estimated` value—when `true`, this means Payitoff has determined the exact dollar amount of a group-level monthly payment, from which loan-level monthly payments will be calculated to be as accurate as possible, even when a Servicer doesn't directly expose loan-level payment info.
+
+#### Schema Definition
+
+| Property                   | Type           | Format                                                        | Description                                                             |
+| -------------------------- | -------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| id                         | string         | uuid                                                          | A unique UUID identifier for this PaymentGroup.                         |
+| monthly\_payment           | object         | [GroupMonthlyPayment](/docs/group-monthly-payment-schema)     | An object that describes the details of a PaymentGroup monthly payment. |
+| name                       | string         | The name by which a Servicer defines this group.              |                                                                         |
+| payment\_reference\_number | string or null | The account number needed to allocate payments to this group. |                                                                         |
+
+#### Example
+
+PaymentGroup
+
+`{
+  "id": "f7498357-844d-4d0e-a0e9-573003cada13",
+  "monthly_payment": {
+    "current_amount_due": "0.00",
+    "estimated": false,
+    "next_payment_due": "2022-04-01",
+    "past_due_amount": "0.00",
+    "scheduled_amount": "445.45"
+  },
+  "name": "AJ",
+  "payment_reference_number": null
+}
+`

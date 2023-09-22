@@ -1,0 +1,23 @@
+---
+title: "Origination"
+description: "Payitoff API: Origination Schema"
+---
+
+An `Origination` object describes both what has been retrieved from Servicer Aggregation, as well as any other pertinent information we can interpret and calculate from collected data to accurately describe each [PortfolioLoan](/docs/portfolio-loan-schema) object's original state.
+
+#### Schema Definition
+
+| Property | Type   | Format  | Description                                                                                                                                                               |
+| -------- | ------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| amount   | string | decimal | Original principal balance when this PortfolioLoan was given to Borrower.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision. |
+| date     | string | date    | The date the PortfolioLoan was officially given to the borrower.                                                                                                          |
+
+#### Example
+
+Origination
+
+`{
+  "amount": "8559.99",
+  "date": "2022-02-09"
+}
+`

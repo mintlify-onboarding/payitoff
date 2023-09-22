@@ -1,0 +1,38 @@
+---
+title: "PaymentServicer"
+description: "Payitoff API: PaymentServicer Schema"
+---
+
+A `PaymentServicer` object describes a Servicer, and exposes Payments-related information.
+
+#### Schema Definition
+
+| Property | Type    | Format                                                                                           | Description                            |
+| -------- | ------- | ------------------------------------------------------------------------------------------------ | -------------------------------------- |
+| address  | object  | [Address](/docs/address-schema)                                                                  | Servicer's address.                    |
+| autopay  | boolean | Indicates whether this PaymentServicer supports activating and deactivating Autopay via our API. |                                        |
+| features | object  | An object describing supported features for a PaymentServicer.                                   |                                        |
+| name     | string  | Servicer's name.                                                                                 |                                        |
+| id       | string  | uuid                                                                                             | Unique identifier of a PaymentServicer |
+
+#### Example
+
+PaymentServicer
+
+`{
+  "address": {
+    "street1": "123 Main St",
+    "street2": "Suite 501",
+    "street3": null,
+    "city": "Poughkeepsie",
+    "state": "NY",
+    "zipcode": "12345-6789"
+  },
+  "autopay": true,
+  "features": {
+    "payment_profiles": false
+   },
+  "name": "Great Lakes",
+   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+`

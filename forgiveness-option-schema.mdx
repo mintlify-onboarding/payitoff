@@ -1,0 +1,55 @@
+---
+title: "ForgivenessOption"
+description: "Payitoff API: ForgivenessOption Schema"
+---
+
+There are many student loan forgiveness programs at federal, state, and lower levels available to borrowers. Our API surfaces two of the largest programs—PSLF and TCLI—and support for more forgiveness programs will continue to increase in the future.
+
+> 📘
+> 
+> Understand `total_paid` vs `total_cost`
+> 
+> **`total_paid`** is the sum of all monthly payments a borrower will make on a loan's current Repayment Plan over its lifetime.
+> 
+> With Income-Driven Repayment plans, there is sometimes a "tax bomb" at the end of their repayment term—any outstanding balance is forgiven, but treated as taxable income. Thus, **`total_cost`** provides the sum of `total_paid` plus the taxes owed on that forgiven amount (which is calculated and provided in the `amount_forgiven` and `estimated_tax_liability` properties). In other words,`total_cost` is the bottom line amount a borrower will pay to dispense of their loan on a given `ForgivenessOption`.
+
+#### Schema Definition
+
+| Property               | Type   | Format                                              | Description                                                                                                                                                                                                          |
+| ---------------------- | ------ | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| amount\_forgiven       | number | float                                               | Total amount of outstanding Loan balance that will be forgiven at the end of the required repayment term.                                                                                                            |
+| eligible\_loans        | array  | [Loan](/docs/loan-schema)                           | An array of Loan objects which meet the eligibility criteria for this ForgivenessOption.                                                                                                                             |
+| ineligible\_loans      | array  | [Loan](/docs/loan-schema)                           | An array of Loan objects which **do not** meet the eligibility criteria for this ForgivenessOption.                                                                                                                  |
+| ineligible\_reasons    | array  | string                                              | An array of reasons Loans or a Borrower may not meet eligibility criteria for this ForgivenessOption.                                                                                                                |
+| matching\_institutions | array  | anyOf:EmployerGovernmentAgencyLowIncomeSchoolSchool | Institutions that employ a Borrower and qualify for this ForgivenessOption.                                                                                                                                          |
+| metadata               | object | Additional details about this ForgivenessOption.    |                                                                                                                                                                                                                      |
+| name                   | string | The name of this forgiveness program.               |                                                                                                                                                                                                                      |
+| savings                | number | float                                               | The estimated savings a Borrower will realize on this ForgivenessOption.                                                                                                                                             |
+| total\_cost            | number | float                                               | The sum of total\_paid plus estimated\_tax\_liability owed on total amount\_forgiven. In other words, total\_cost is the bottom line amount a borrower will pay to dispense of their loan on this ForgivenessOption. |
+| total\_paid            | number | float                                               | The sum of all monthly payments a borrower will make on a loan's current Repayment Plan over its lifetime.                                                                                                           |
+| type                   | string | pslftcli                                            | A short string code representing the type of forgiveness program.                                                                                                                                                    |
+
+#### Example
+
+An example `ForgivenessOption` returned from our [Get Forgiveness Options](/reference/get-forgiveness-options) API endpoint:
+
+ForgivenessOption
+
+`{
+  "amount_forgiven": 0.00,
+  "eligible_loans": [],
+  "ineligible_loans": [],
+  "ineligible_reasons": [
+    "Does not work for qualifying employer"
+  ],
+  "matching_institutions": [],
+  "metadata": {
+    "qualifying_start_date": "2015-12-10"
+  },
+  "name": "Teacher Loan Forgiveness",
+  "savings": 0.00,
+  "total_cost": 0.00,
+  "total_paid": 0.00,
+  "type": "tcli"
+}
+`

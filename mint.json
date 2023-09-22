@@ -1,0 +1,59 @@
+{
+    "name": "payitoff",
+    "logo": {
+      "light": "/logo/light.png",
+      "dark": "/logo/dark.png"
+    },
+    "favicon": "/favicon.png",
+    "colors": {
+      "primary": "#C8B6F9",
+      "light": "#D9CBFE",
+      "dark": "#C8B6F9"
+    },
+    "topbarCtaButton": {
+      "name": "Book Demo",
+      "url": "https://www.payitoff.io/book-a-demo"
+    },
+    "topbarLinks": [
+      {
+        "name": "Contact",
+        "url": "https://www.payitoff.io/contact"
+      }
+    ],
+    "tabs": [
+        {
+            "name": "API Reference",
+            "url": "api-reference"
+        }
+    ],
+    "navigation": [
+        {
+            "group": "Integration Guide",
+            "pages": [
+                "integration-guides",
+                "understand-the-domain",
+                "integrate-in-10-minutes",
+                "build-your-own-experience",
+                "data-snapshots",
+                "going-live"
+            ]
+          },
+          {
+            "group": "Aggregation",
+            "pages": [
+              "aggregation"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/create"
+            ]
+          }
+    ],
+    "footerSocials":
+      {
+          "twitter": "https://twitter.com/payitoffapp",
+          "linkedin": "https://www.linkedin.com/company/payitoff/"
+      }
+  }

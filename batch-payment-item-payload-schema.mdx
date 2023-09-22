@@ -1,0 +1,57 @@
+---
+title: "BatchPaymentItemPayload"
+description: "Payitoff API: BatchPaymentItemPayload Schema"
+---
+
+When you [Create BatchPayments](/reference/create-batch-payment), you must provide a `payments` array as part of your [BatchPaymentPayload](/docs/batch-payment-payload-schema). The `BatchPaymentPayload.payments` array is populated with `BatchPaymentItemPayload` objects, which define the how you want your funds to be allocated.
+
+#### Schema Definition
+
+Properties in **bold** are required.
+
+| Property         | Type   | Format                                                                                                                                                                                                | Description                                                                              |
+| ---------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **allocation**   | object | [BatchPaymentAllocation](/docs/batch-payment-allocation-schema)                                                                                                                                       | Identifies if a BatchPaymentItem is allocated to a Servicer or a specific PortfolioLoan. |
+| **amount**       | string | decimal                                                                                                                                                                                               | The amount to pay to the defined allocation.                                             |
+| **borrower\_id** | string | uuid                                                                                                                                                                                                  | A UUID identifying the Borrower on behalf of whom this BatchPaymentItem is allocated.    |
+| reference\_id    | string | An arbitrary string that _must be unique_ for each batch._Not required, but highly recommended._NOTE: This reference\_id **must not** be the same value as the one you provided for the BatchPayment. |                                                                                          |
+
+> 🚧
+> 
+> A few words about `reference_id` values
+> 
+> You will notice that you can supply a `reference_id` for [BatchPayment](/docs/batch-payment-schema) and [BatchPaymentItem](/docs/batch-payment-item-schema) objects when you create them via their relevant `Payload` objects. While these fields are not _required_, **we highly recommend always providing a _unique_ value for each `reference_id` property in your API request payloads.** Providing a UUID is an easy way to ensure you always have unique `reference_id` values for your `BatchPayment` and `BatchPaymentItem` objects.
+> 
+> ### 
+> 
+> Get the most out of `reference_id`
+> 
+> [](#get-the-most-out-of-reference%5Fid)
+> 
+> Your `reference_id` values should be a unique identifier created and stored in _your_ application to identify this `BatchPaymentItem` for _your_ system. 
+> 
+> We will use the `reference_id`, when available, to ensure idempotency across [Create BatchPayment](/reference/create-batch-payment) requests (ensuring you always get the same `BatchPayment` outcome even if you resubmit the same request).
+> 
+> We will associate the `reference_id` of an item in your `BatchPaymentItemPayload` if the [Create BatchPayments](/reference/create-batch-payment) request fails—allowing you to identify the offending item in your payload that did not pass validation.
+> 
+> The `reference_id` can be used to ensure you are able to match _your_ platform's internal representation of a `BatchPaymentItem` with its Payitoff `BatchPaymentItem` record.
+> 
+> The `reference_id` can help facilitate auditing your `BatchPayment` requests between your internal systems and the Payitoff API fulfilling `BatchPayment` requests.
+> 
+> The `reference_id` is a string field that allows any value, to provide maximum flexibility to provide your own identification scheme.
+
+#### Example
+
+BatchPaymentItemPayload
+
+`{
+  "allocation": {
+    "id": "75715081-e513-4008-ad68-fa195c9de9f9",
+    "type": "loan"
+  },
+  "amount": "1.00",
+  "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+  "id": "fd3acad2-5e34-4718-bbe6-212a55cb4cbf",
+  "reference_id": "b123-1"
+}
+`

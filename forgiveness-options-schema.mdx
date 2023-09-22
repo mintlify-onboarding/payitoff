@@ -1,0 +1,61 @@
+---
+title: "ForgivenessOptions"
+description: "Payitoff API: ForgivenessOptions Schema"
+---
+
+There are many student loan forgiveness programs at federal, state, and lower levels available to borrowers. Our API surfaces two of the largest programs—PSLF and TCLI—and support for more forgiveness programs will continue to increase in the future.
+
+When you query our [Get Forgiveness Options](/reference/get-forgiveness-options) API endpoint, you'll receive a JSON response with an `array` of [ForgivenessOption](/docs/forgiveness-option-schema) objects.
+
+#### Schema Definition
+
+| Property             | Type  | Format                                               | Description                            |
+| -------------------- | ----- | ---------------------------------------------------- | -------------------------------------- |
+| forgiveness\_options | array | [ForgivenessOption](/docs/forgiveness-option-schema) | An array of ForgivenessOption objects. |
+
+#### Example
+
+An example response from our [Get Forgiveness Options](/reference/get-forgiveness-options) API endpoint:
+
+ForgivenessOptions
+
+`[
+  {
+    "amount_forgiven": 0.00,
+    "eligible_loans": [],
+    "ineligible_loans": [],
+    "ineligible_reasons": [],
+    "matching_institutions": [
+      {
+        "city": "albemarle",
+        "is_school": false,
+        "name": "city of albemarle",
+        "state_code": "NC"
+      }
+    ],
+    "metadata": {},
+    "name": "Public Service Loan Forgiveness",
+    "savings": 0.00,
+    "total_cost": 0.00,
+    "total_paid": 0.00,
+    "type": "pslf"
+  },
+  {
+    "amount_forgiven": 0.00,
+    "eligible_loans": [],
+    "ineligible_loans": [],
+    "ineligible_reasons": [
+      "Does not work for qualifying employer"
+    ],
+    "matching_institutions": [],
+    "metadata": {
+      "qualifying_start_date": "2015-12-10"
+    },
+    "name": "Teacher Loan Forgiveness",
+    "savings": 0.00,
+    "total_cost": 0.00,
+    "total_paid": 0.00,
+    "type": "tcli"
+  }
+]
+`

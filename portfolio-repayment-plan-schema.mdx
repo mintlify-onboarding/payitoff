@@ -1,0 +1,25 @@
+---
+title: "PortfolioRepaymentPlan"
+description: "Payitoff API: PortfolioRepaymentPlan Schema"
+---
+
+Every `PortfolioLoan` in repayment is on a Repayment Plan. While many of our API request payload objects and responses indicate a `repayment_plan_type` as a short, helpful `string` representation of a `PortfolioLoan`'s current Repayment Plan, the `PortfolioRepaymentPlan ` object provides full details.
+
+#### Schema Definition
+
+| Property                  | Type    | Format                                                                                                                               | Description                                                                                                                                                                                              |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| description               | string  | A full description of this plan.                                                                                                     |                                                                                                                                                                                                          |
+| income\_driven\_repayment | boolean | Is this an income-driven Repayment Plan?                                                                                             |                                                                                                                                                                                                          |
+| type                      | string  | alternativealt\_graduatedalt\_neg\_amalt\_repayeextendedextended\_graduatedgraduatedibricrisrnew\_ibrno\_repaymentpayerepayestandard | The type of Repayment Plan, often used as shorthand (in all-caps) and the value you'd supply in repayment\_plan\_type fields, and to Nexus as the plan argument when starting the Nexus.enroll workflow. |
+
+#### Example
+
+PortfolioRepaymentPlan
+
+`{
+  "description": "Pay As You Earn Repayment Plan",
+  "income_driven_repayment": true,
+  "type": "paye"
+}
+`

@@ -1,0 +1,61 @@
+---
+title: "EnrollmentStatus"
+description: "Payitoff API: EnrollmentStatus Schema"
+---
+
+An [Enrollment](/docs/enrollment-schema) object will always include an `EnrollmentStatus` object under the `status` property.
+
+#### Schema Definition
+
+| Property    | Type   | Format                                                                            | Description                                                                     |
+| ----------- | ------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| description | string | _See examples below._                                                             | User-friendly string describing the EnrollmentStatus.type value.                |
+| type        | string | cancelledcompletepartially\_submittedpendingunprocessableapprovedneeds\_attention | Lowercased string describing the current status of an Enrollment.               |
+| updated\_at | string | date-time                                                                         | A DateTime string value indicating when the Enrollment.status was last updated. |
+
+#### Examples
+
+EnrollmentStatus Examples
+
+`{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission Cancelled",
+  "type": "cancelled"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission Complete. Look for a letter from your servicer confirming your updated monthly payment.",
+  "type": "complete"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submitted to some but not yet all servicers",
+  "type": "partially_submitted"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission in Progress",
+  "type": "pending"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission Unprocessable",
+  "type": "unprocessable"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission Approved",
+  "type": "approved"
+}
+
+{
+  "updated_at": "2021-02-22T17:56:08.368Z",
+  "description": "Submission Needs Attention",
+  "type": "needs_attention"
+}
+`

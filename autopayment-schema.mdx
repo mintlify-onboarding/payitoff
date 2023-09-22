@@ -1,0 +1,49 @@
+---
+title: "Autopayment"
+description: "Payitoff API: Autopayment Schema"
+---
+
+An `Autopayment` is an object that identifies when a `Borrower` has _activated Autopay_ at a particular `Servicer`. 
+
+When you [Activate Autopay](/reference/activate-autopay), you will receive an `Autopayment` record in response, and will find that `Autopayment` record (and others, if they exist) when you [List all Autopayment records](/reference/get-autopay).
+
+When you [Deactivate Autopay](/reference/deactivate-autopay), the `Autopayment` record will be removed.
+
+#### Schema Definition
+
+| Property        | Type   | Format                                           | Description                                                                 |
+| --------------- | ------ | ------------------------------------------------ | --------------------------------------------------------------------------- |
+| servicer        | object | [PaymentServicer](/docs/payment-servicer-schema) | The Servicer to whom this Autopayment belongs.                              |
+| source\_account | object | [SourceAccount](/docs/source-account-schema)     | The SourceAccount that will be used when making automatic monthly payments. |
+
+#### Example
+
+Autopayment
+
+`{
+  "servicer": {
+    "address": {
+      "street1": "123 Main St",
+      "street2": "Suite 500",
+      "street3": null,
+      "city": "Somewhere",
+      "state": "TX",
+      "zipcode": "12345"
+    },
+    "autopay": true,
+    "features": {
+      "payment_profiles": false
+    },
+    "name": "Some Servicer",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  },
+  "source_account": {
+    "account_number_last_4": "1234",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name_on_account": "John Doe",
+    "payments_supported": true,
+    "routing_number": "123456789",
+    "type": "checking"
+  }
+}
+`

@@ -1,0 +1,134 @@
+---
+title: "PortfolioServicer"
+description: "Payitoff API: PortfolioServicer Schema"
+---
+
+A `PortfolioServicer` is a rich object that describes the full picture of a borrower's loan portfolio by a servicer.
+
+> 📘
+> 
+> Our Portfolio API provides richer, more detailed information of a borrowers entire loan portfolio. All details are now grouped by the Servicers they belong to, so you can see the full picture of each servicer who holds a borrower's loans.
+
+#### Schema Definition
+
+| Property              | Type   | Format                                         | Description                                                                                                         |
+| --------------------- | ------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| accrued\_interest     | string | decimal                                        | The total accrued interest as reported by the servicer. Included in outstanding\_balance.                           |
+| capitalized\_interest | string | decimal                                        | The total capitalized interest as reported by the servicer.                                                         |
+| current\_principal    | string | decimal                                        | The total outstanding princpal balance owed to the servicer. Included in outstanding\_balance.                      |
+| loans                 | array  | [PortfolioLoan](/docs/portfolio-loan-schema)   | An array of PortfolioLoan objects serviced by the servicer.                                                         |
+| monthly\_payment      | object | [MonthlyPayment](/docs/monthly-payment-schema) | A MonthlyPayment object that provides the total monthly payment details owed to the servicer.                       |
+| outstanding\_balance  | string | decimal                                        | The total outstanding balance owed to the servicer. Includes accrued\_interest and current\_principal.              |
+| payment\_groups       | array  | [PaymentGroup](/docs/payment-group-schema)     | An array of PaymentGroup objects to which loans may belong. If the servicer does not group loans, will be **null**. |
+| servicer              | object | [Servicer](/docs/servicer-schema)              | An object that describes the Servicer who services this set of loans.                                               |
+
+#### Example
+
+PortfolioServicer
+
+`{
+  "accrued_interest": "345.88",
+  "capitalized_interest": "4561.86",
+  "current_principal": "73975.70",
+  "loans": [
+    {
+      "account_number": null,
+      "created_at": "2021-10-14T05:46:23.244Z",
+      "disbursement_dates": null,
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "interest_rate": {
+        "effective": null,
+        "original": null
+      },
+      "monthly_payment": {
+        "estimated": true,
+        "next_payment_due": "2022-04-01",
+        "scheduled_amount": null
+      },
+      "origination": {
+        "amount": null,
+        "date": null
+      },
+      "outstanding_interest": 0,
+      "outstanding_principal": 0,
+      "payment_group_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "payoff": {
+        "quote": "string",
+        "quote_date": "2021-10-14"
+      },
+      "pslf": {
+        "eligible_payments": 0,
+        "expected_forgiveness_date": "2021-10-14",
+        "ineligible_payment_details": [
+          {
+            "denial_reason": "string",
+            "description": "string",
+            "period": "string"
+          }
+        ],
+        "ineligible_payments": 0,
+        "non_qualifying_payment_details": [
+          {
+            "description": "string",
+            "period": "string",
+            "status": "string"
+          }
+        ],
+        "non_qualifying_payments": 0,
+        "qualifying_payments": 0,
+        "remaining_payments": 0
+      },
+      "repayment_plan": {
+        "description": "Revised Pay As You Earn Repayment Plan",
+        "income_driven_repayment": true,
+        "type": "repaye"
+      },
+      "status": {
+        "code": null,
+        "description": null
+      },
+      "type": {
+        "code": null,
+        "description": null,
+        "federal": true,
+        "guarantor": "FEDERAL",
+        "lender": null,
+        "subsidized": false,
+        "sula_eligible": false
+      },
+      "updated_at": "2021-10-14T05:46:23.244Z"
+    }
+  ],
+  "monthly_payment": {
+    "estimated": true,
+    "next_payment_due": "2022-04-01",
+    "scheduled_amount": "445.95"
+  },
+  "outstanding_balance": "74321.58",
+  "payment_groups": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "monthly_payment": {
+        "current_amount": null,
+        "estimated": false,
+        "next_payment_due": "2022-04-01",
+        "past_due_amount": null,
+        "scheduled_amount": null
+      },
+      "name": "AA"
+    }
+  ],
+  "servicer": {
+    "address": {
+      "street1": "123 Main St",
+      "street2": "Suite 501",
+      "street3": null,
+      "city": "Poughkeepsie",
+      "state": "NY",
+      "zipcode": "12345-6789"
+    },
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "string"
+  }
+}
+`

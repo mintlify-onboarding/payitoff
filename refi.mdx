@@ -1,0 +1,171 @@
+---
+title: "Refi"
+description: "Help borrowers get pre-qualified to refinance their loans with Nexus.refi"
+---
+
+When a `Borrower` is no longer able to leverage federal options or has private loans, the next step is often refinancing their remaining student loan debt. To guide your `Borrower` on the path to refinancing their loans, use `Nexus.refi` to help them pre-qualify and review Refi Offers. Once they complete the workflow, they will be directed to the lender to complete their application.
+
+> 📘
+> 
+> Nexus pre-fills information Payitoff knows about your borrowers
+> 
+> In order to ease the process for borrowers, Nexus will pre-fill all possible information required throughout the workflow. If a borrower has used Nexus before or you have already stored information for the borrower via our API, Nexus will populate any previously saved information such as name, AGI, employment status, and contact info. The relevant Nexus screens will still be presented to the user so they may confirm or correct the pre-filled data as they complete the Refi workflow.
+
+### Calling `Nexus.refi`
+
+`Nexus.refi` expects to receive a single `options` object as a parameter. This `options` object allows you to specify two possible callbacks:
+
+* **`onSuccess`** — a function to execute when the workflow completes successfully
+* **`onExit`** — a function to execute when your borrower exits the workflow or an error occurs
+
+Calling Nexus.refi
+
+`// Assuming you have a button your Borrower can click to start the refi
+let refiButton = document.querySelector('#nexus-refi-button')
+
+// Attach click handler to invoke Nexus.refi
+refiButton.addEventListener('click', e => {
+  Nexus.refi({
+    // the function to call when borrower is done
+    onSuccess: refiSuccess,
+    // the function to call when borrower quits or error occurs
+    onExit: refiExit
+  })
+})
+`
+
+#### `onSuccess` callback
+
+When your `Borrower` finishes the `Nexus.refi` workflow—which occurs when they click the **Apply now** button after selecting a pre-qualified offer—Nexus will execute the unary callback function you provide to the `onSuccess` option when invoking `Nexus.refi`.
+
+Nexus.refi — onSuccess callback
+
+`function refiSuccess(response) {
+  // maybe congratulate your borrower on selecting a refinancing offer!
+  console.log('Refi offer selected')
+  console.log(response)
+}
+`
+
+#### `onSuccess` response
+
+Your `onSuccess` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`**—a `string` value indicating the workflow succeeded
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `offer`—an `object` that provides additional details on the offer selected by the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this offer  
+         * `lender`—the name of the lender providing this offer  
+   * `submission`—an `object` that provides additional details about information submitted by the borrower  
+         * `uuid`—the unique Payitoff UUID that identifies the set of information submitted by the borrower  
+         * `loans`—an array of unique Payitoff UUIDs that identify the set of loans selected for refinancing by the borrower
+* **`status`**—a `string` value. Will always be **`"complete"`** for an `onSuccess` callback.
+
+##### Example `onSuccess` callback response for `Nexus.refi`
+
+In the example below, you can see a user selected a refinancing offer and clicked the **Apply now** button to close the widget.
+
+Nexus.refi — onSuccess response
+
+`{
+  message: "Refi complete",
+  result: {
+    borrower: {
+      uuid: "1899c043-a20a-46d9-b5bb-0eed21a40caf"
+    },
+    offer: {
+      id: "d1fb8aad-813e-4b8f-af36-49bcb4b509d3",
+      lender: "Arkansas Student Loan Authority"
+    },
+    submission: {
+      id: "aff108cb-73d6-4273-a2e9-ddee97f033a8",
+      loans: [
+        "966a98cd-821e-4064-8ae3-82185abc97c8",
+        "cc2102b3-bd1d-4fba-8cbe-680b121b41ac",
+        "6e6b4aa9-087f-473d-93dc-386722e9886a"
+      ]
+    },
+    workflow: "refi"
+  },
+  status: "complete"
+}
+`
+
+> 📘
+> 
+> Borrower IDs
+> 
+> **When relying on Nexus to create borrowers, you will need to capture the `borrower.uuid` that is returned in order to make API calls on behalf of your borrowers.**
+
+#### `onExit` callback
+
+When your `Borrower` exits the `Nexus.refi` workflow—which occurs when they cancel or otherwise dismiss Nexus without completing the entire `refi` workflow—Nexus will execute the unary callback function you provide to the `onExit` option when invoking `Nexus.refi`.
+
+Nexus.refi — onExit callback
+
+`function refiExit(response) {
+  switch (response.status) {
+    case "incomplete":
+      // User quit the widget or received no offers.
+      // Maybe save that they quit so you can prompt them to finish later.
+      break;
+    case "complete":
+      // User was not eligible to complete the flow.
+      break;
+    case "error":
+      // You supplied an invalid Nexus key and/or Borrower UUID,
+      // or an error occurred in Nexus/Payitoff.
+      break;
+  }
+}
+`
+
+#### `onExit` response
+
+Your `onExit` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`** — a `string` indicating what occurred to trigger the exit
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed. **If you're relying on Nexus to create borrowers for you, you will want to save the `uuid` that is returned so you can make API calls on behalf of your borrowers.**  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `submission`—an `object` that provides additional details about information submitted by the borrower  
+         * `uuid`—the unique Payitoff UUID that identifies the set of information submitted by the borrower  
+         * `loans`—the set of unique Payitoff UUIDs that identify the set of loans selected for refinancing by the borrower  
+   * `workflow`—an optional `string` value indicating what workflow a borrower was in when they exited Nexus, if they decided to bail out. Should always be present when `status` is `"incomplete"`.
+* **`status`** — a `string` value that is one of the following values:  
+   * `"error"` — Nexus received an invalid `nexus_key`, `uuid`, or encountered some other error  
+   * `"illegal"` — You have attempted to perform an action for a borrower that is not allowed, or for which the borrower is not currently ready  
+   * `"incomplete"` — Your borrower quit the widget without completing the requested workflow
+
+##### Example `onExit` callback response for `Nexus.refi`
+
+In the example below, you see the response when a user quits the widget in the middle of the workflow. Here, you can see that the borrower did not complete the pre-qualification.
+
+Nexus.refi — onExit response
+
+`{
+  message: "You did not complete the prequalification to refinance your loans.",
+  result: {
+    borrower: {
+      uuid: "1899c043-a20a-46d9-b5bb-0eed21a40caf"
+    },
+    submission: {
+      id: "d70b32fa-1644-44f2-be45-f167794c1a98",
+      loans: [
+        "6e6b4aa9-087f-473d-93dc-386722e9886a",
+        "966a98cd-821e-4064-8ae3-82185abc97c8"
+      ]
+    },
+    workflow: "refi"
+  },
+  status: "incomplete"
+}
+`
+
+> 📘
+> 
+> Knowing where your borrower left off
+> 
+> Payitoff highly recommend you capture the `incomplete` status and store it internally. This will prove to be a helpful engagement point in order to re-engage with users as well as prompt them to complete the workflow where they left off.

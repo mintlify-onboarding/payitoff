@@ -1,0 +1,25 @@
+---
+title: "NonQualifyingPayment"
+description: "Payitoff API:  NonQualifyingPayment Schema"
+---
+
+The `NonQualifyingPayment` schema provides the reasons that a PSLF payment does not qualify.
+
+#### Schema Definition
+
+| Property    | Type   | Format                                                             | Description |
+| ----------- | ------ | ------------------------------------------------------------------ | ----------- |
+| description | string | A long form explanation of why this payment does not yet qualify.  |             |
+| period      | sting  | The month and year that the payment was made.                      |             |
+| status      | string | A short form explanation of why this payment does not yet qualify. |             |
+
+#### Example
+
+NonQualifyingPayment
+
+`{
+  "description": "This payment period is eligible but requires approved employment in order to qualify.",
+  "period": "05/2021",
+  "status": "Employment Not Certified"
+}
+`

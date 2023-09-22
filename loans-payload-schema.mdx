@@ -1,0 +1,61 @@
+---
+title: "LoansPayload"
+description: "Payitoff API: LoansPayload Schema"
+---
+
+Whenever you create `Loan` objects for a `Borrower` using the [Create Loans](/reference/create-loans) API endpoint, you must supply a request payload. This payload is _always_ marked by a `loans` property. However, the value of that `loans` property may be one of two entities:
+
+* an `array` of [LoanPayload](/docs/loan-request-schema) objects
+* a single base64-encoded [LoansFilePayload](/docs/loans-file-payload-schema) value
+
+| Property | Type   | Format                                   | Description                                        |
+| -------- | ------ | ---------------------------------------- | -------------------------------------------------- |
+| loans    | string | byte                                     | base64-encoded MSD file as LoansFilePayload        |
+| loans    | array  | [LoanPayload](/docs/loan-request-schema) | Array of LoanPayload objects with loan attributes. |
+
+#### `LoanPayload` array example
+
+When creating `Loan` objects via data collected from your `Borrower`, Plaid, or other source, the `loans` property value should be an `array` of [LoanPayload](/docs/loan-request-schema) objects with loan attributes directly:
+
+LoanPayload Array
+
+`{
+  "loans": [
+    {
+      "loan_type": "Direct Stafford Unsubsidized Loan",
+      "interest_rate": 7.08,
+      "outstanding_principal": 20000.00,
+      "outstanding_interest": 0.0,
+      "original_principal": 20000.00,
+      "origination_date": "2019-09-22",
+      "servicer_name": "Nelnet",
+      "loan_status": "in repayment",
+      "monthly_payment": 300,
+      "repayment_plan_begin_date": "2020-05-11"
+    },
+    {
+      "loan_type": "Direct Stafford Unsubsidized Loan",
+      "interest_rate": 7.08,
+      "outstanding_principal": 20000,
+      "outstanding_interest": 0.0,
+      "original_principal": 20000.00,
+      "origination_date": "2019-09-22",
+      "loan_status": "in repayment",
+      "monthly_payment": 300,
+      "servicer_name": "Navient",
+      "repayment_plan_begin_date": "2020-05-11"
+    }
+  ]
+}
+`
+
+#### `LoansFilePayload` example
+
+When creating `Loan` objects by uploading an MSD file, the `loans` property value should be a base64-encoded [LoansFilePayload](/docs/loans-file-payload-schema) of the MSD file itself:
+
+LoansFilePayload
+
+`{
+  "loans": "iVBORw0KGgoAAAANSUhEUgAAAvwAAAUeCAYAAAACc..."
+}
+`

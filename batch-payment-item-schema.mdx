@@ -1,0 +1,36 @@
+---
+title: "BatchPaymentItem"
+description: "Payitoff API: BatchPaymentItem Schema"
+---
+
+A `BatchPaymentItem` is an object representing a singular _allocation_ of funds within a [BatchPayment](/docs/batch-payment-schema).
+
+When you [Create BatchPayments](/reference/create-batch-payment) you provide an array of [BatchPaymentItemPayload](/docs/batch-payment-payload-schema) objects in the `payments` array to describe how to allocate the `BatchPayment`. These will, upon passing validation, be returned from the API as `BatchPaymentItem` objects.
+
+#### Schema Definition
+
+| Property      | Type   | Format                                                            | Description                                                                              |
+| ------------- | ------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| allocation    | object | [BatchPaymentAllocation](/docs/batch-payment-allocation-schema)   | Identifies if a BatchPaymentItem is allocated to a Servicer or a specific PortfolioLoan. |
+| amount        | string | decimal                                                           | The amount that will be paid to the defined allocation.                                  |
+| borrower\_id  | string | uuid                                                              | A UUID identifying the Borrower on behalf of whom this BatchPaymentItem is allocated.    |
+| id            | string | uuid                                                              | The UUID that identifies this BatchPaymentItem.                                          |
+| reference\_id | string | The reference\_id value provided in your BatchPaymentItemPayload. |                                                                                          |
+| status        | string | The status of this BatchPaymentItem.                              |                                                                                          |
+
+#### Example
+
+BatchPaymentItem
+
+`{
+  "allocation": {
+    "id": "75715081-e513-4008-ad68-fa195c9de9f9",
+    "type": "loan"
+  },
+  "amount": "1.00",
+  "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+  "id": "fd3acad2-5e34-4718-bbe6-212a55cb4cbf",
+  "reference_id": null,
+  "status": "pending"
+}
+`

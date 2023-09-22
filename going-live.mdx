@@ -1,0 +1,30 @@
+---
+title: "Going Live"
+description: "Ensure you're ready to go to production with Payitoff's API & Nexus widget"
+---
+
+When you first start integrating Payitoff's API and Nexus widget into your products, you're developing against our Sandbox environment. The Payitoff Sandbox is an exact match of our Production environment, except there are a number of places—especially where Nexus is concerned—in which data can be auto-generated to provide a smooth integration experience, and isn't _live_ data that matches real-world `Borrowers`.
+
+When you're ready to go live, there are a few things you'll want to ensure you have in place to make for a clean going-live experience and no hiccups or headaches.
+
+## Payitoff Live Deployment Checklist
+
+#### 1\. Update API base URL
+
+All Production API calls should go to `https://partners.payitoff.io/api/<version>`, where `version` is the API version you are currently using. For example, if you've built your integration against API v1.0.2, your API base URL would be `https://partners.payitoff.io/api/v1.0.2`.
+
+**tl;dr:** Ensure your API URL _does not_ start with `https://payitoff-sandbox.io`
+
+#### 2\. Use your _Production_ API Key
+
+All API requests require your API Key as a Bearer token for Authorization. API keys are environment-specific, so the Sandbox key you've used to build your integration will not work in Production. However you manage your secrets, just be sure your production deployment is set to use your Production API key.
+
+#### 3\. Update your Nexus `script` tag
+
+If you're using Nexus, you'll want to update the `src` attribute on your Nexus `script` tag to `https://payitoff-cdn.io/nexus/js/v1`.
+
+**tl;dr:** Delete `sandbox` from the `script` `src` attribute, or you'll be loading Sandbox Nexus!
+
+#### 4\. Use your _Production_ Nexus Key
+
+Whenever you init the Nexus widget in your app, you must provide a `nexus_key` in the initialization options. Like API Keys, Nexus Keys are environment-specific. This means you'll see errors in Nexus telling you that your Nexus Key is invalid if you send a Sandbox key to the Production widget, or if you forget to update your `script` `src` attribute, and send a Production key to the Sandbox widget.

@@ -1,0 +1,215 @@
+---
+title: "Events"
+description: "Supported events you can receive via Payitoff Webhooks"
+---
+
+## Supported Events
+
+The following are the events you can receive, process, and react to in your applications via [Payitoff Webhooks](/docs/api-webhooks).
+
+Event notifications delivered via Webhooks will provide the same shaped JSON payload containing `event_type` and `data` keys. All event types follow an `object.event` pattern, and where relevant, return a JSON representation of the `object` which experienced the `event`, with updated `data` reflecting the state of the `object` after the `event`—the shape of this `object` will match the documented shape in its relevant schema. Some events, such as the `test` event type, return `null` as their `data`.
+
+**NOTE:** _In the JSON samples below, the `data` object includes the Schema of the data that will be returned. Each event description should include a link to the relevant schema._
+
+---
+
+### `borrower.delinquent`
+
+An event that occurs when a [Borrower](/docs/borrower-schema) is detected to have entered delinquency status at a [Servicer](/docs/servicer-schema).
+
+JSON
+
+`{ 
+  "event_type": "borrower.delinquent",
+  "data": {
+    "borrower": Borrower,
+    "servicer": Servicer
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `connectivity.interrupted`
+
+An event that occurs when the account-syncing connectivity between a [Borrower](/docs/borrower-schema) and a [Servicer](/docs/servicer-schema) has been interrupted (_e.g._, because credentials have changed). The event notification will provide `Borrower.uuid` and `Servicer.id` values.
+
+JSON
+
+`{ 
+  "event_type": "connectivity.interrupted",
+  "data": {
+    "borrower_id": "29847388-7220-40a2-8596-2732ce167a34",
+    "servicer_id": "ed9eeb2b-47bc-4b81-93a5-328b7a14c1b7"
+  }
+}
+`
+
+**NOTE:** _This event can only be triggered manually via our [Test Webhook URL](/reference/test-webhook-url) API endpoint in our **sandbox** environment._
+
+---
+
+### `connectivity.restored`
+
+An event that occurs when the account-syncing connectivity between a [Borrower](/docs/borrower-schema) and a [Servicer](/docs/servicer-schema) has been restored (_e.g._, because user has re-authenticated). The event notification will provide `Borrower.uuid` and `Servicer.id` values.
+
+JSON
+
+`{ 
+  "event_type": "connectivity.restored",
+  "data": {
+    "borrower_id": "29847388-7220-40a2-8596-2732ce167a34",
+    "servicer_id": "ed9eeb2b-47bc-4b81-93a5-328b7a14c1b7"
+  }
+}
+`
+
+**NOTE:** _This event can only be triggered manually via our [Test Webhook URL](/reference/test-webhook-url) API endpoint in our **sandbox** environment._
+
+---
+
+### `connectivity.offline`
+
+An event that occurs when we detect a [Servicer](/docs/servicer-schema) is in maintenance mode or has otherwise gone offline to an extent that affects _all_ borrowers at that Servicer.
+
+JSON
+
+`{ 
+  "event_type": "connectivity.offline",
+  "data": {
+    "servicer": Servicer
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `connectivity.online`
+
+An event that occurs when we detect a [Servicer](/docs/servicer-schema) is no longer in maintenance mode or services have been restored to an extent that no longer affects _all_ borrowers at that Servicer.
+
+JSON
+
+`{ 
+  "event_type": "connectivity.online",
+  "data": {
+    "servicer": Servicer
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `enrollment.approved`
+
+An event that occurs when an [Enrollment](/docs/enrollment-schema) is known to be approved by a Servicer.
+
+JSON
+
+`{ 
+  "event_type": "enrollment.approved",
+  "data": {
+    "enrollment": Enrollment
+  }
+}
+`
+
+**NOTE:** _This event can only be triggered manually via our [Test Webhook URL](/reference/test-webhook-url) API endpoint in our **sandbox** environment._
+
+---
+
+### `enrollment.needs_attention`
+
+An event that occurs when an [Enrollment](/docs/enrollment-schema) is known to have _not_ been approved by a Servicer after a period of time.
+
+JSON
+
+`{ 
+  "event_type": "enrollment.needs_attention",
+  "data": {
+    "enrollment": Enrollment
+  }
+}
+`
+
+**NOTE:** _This event can only be triggered manually via our [Test Webhook URL](/reference/test-webhook-url) API endpoint in our **sandbox** environment._
+
+---
+
+### `loan.paid_off`
+
+An event that occurs when a [Loan](/docs/loan-schema) held by a [Borrower](/docs/borrower-schema) has been paid off.
+
+JSON
+
+`{ 
+  "event_type": "loan.paid_off",
+  "data": {
+    "borrower": Borrower,
+    "loan": Loan
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `payment.historical_change`
+
+An event that occurs when a `Payment` has been detected as having changed in value since its original recording on behalf of a [Borrower](/docs/borrower-schema) . This can occur when a Servicer corrects a data error and corrects historical data that was incorrectly recorded.
+
+JSON
+
+`{ 
+  "event_type": "payment.historical_change",
+  "data": {
+    "borrower": Borrower,
+    "payment": Payment
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `refinance.initiated`
+
+An event that occurs when a [Borrower](/docs/borrower-schema) has initiated a Loan Refinance.
+
+JSON
+
+`{ 
+  "event_type": "refinance.initiated",
+  "data": {
+    "borrower": Borrower
+  }
+}
+`
+
+**NOTE:** _This event cannot be triggered manually at this time._
+
+---
+
+### `test`
+
+A generic test event that will be delivered with no additional `data` payload. It is intended to aid in verifying your webhook endpoint is working and responding correctly.
+
+JSON
+
+`{ 
+  "event_type": "test",
+  "data": null
+}
+`
+
+**NOTE:** _This event can be triggered manually via our [Test Webhook URL](/reference/test-webhook-url) API endpoint in both our **sandbox** and **production** environments._
+
+---

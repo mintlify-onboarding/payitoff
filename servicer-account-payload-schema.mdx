@@ -1,0 +1,45 @@
+---
+title: "SourceAccountPayload"
+description: "Payitoff API: SourceAccountPayload Schema"
+---
+
+To create an `SourceAccount` for a `Borrower`, use our [Create a Source Account](/reference/create-source-account) API endpoint with an `SourceAccountPayload`. 
+
+**NOTE:** The following fields are required:
+
+* `account_number`
+* `name_on_account`
+* `routing_number`
+* `type`
+
+> 🚧
+> 
+> Use `SourcerAccountPayload` for to create a `SourceAccount`
+> 
+> When creating `SourceAccount` objects via API, send a `SourceAccountPayload` as your request body. You'll receive a [SourceAccount](/docs/source-account-schema) as a response.
+
+#### Schema Definition
+
+Properties in **bold** are required.
+
+| Property              | Type   | Format                                                                                              | Description                                            |
+| --------------------- | ------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **account\_number**   | string | The borrower's account number at a financial institution.                                           |                                                        |
+| **name\_on\_account** | string | Name of account at financial institution.                                                           |                                                        |
+| **routing\_number**   | string | The borrower's routing number at a financial institution.**It must be exactly 9 digits in length.** |                                                        |
+| **type**              | string | brokeragecheckingsavings                                                                            | Type of account at a borrower's financial institution. |
+
+#### Example
+
+JSON
+
+`{
+  "source_account":
+  {
+    "account_number": "Wells Fargo Joint Checking",
+    "name_on_account": "98765543210",
+    "routing_number": "123456789",
+    "type": "checking"
+  }
+}
+`

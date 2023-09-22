@@ -1,0 +1,52 @@
+---
+title: "Portfolios"
+description: "Aggregated Student Loan Portfolio that are reliable and up-to-date."
+---
+
+In API `v1.0.1`, we're introducing automated student loan aggregation and data syncing. By using [Nexus](/docs/nexus) to walk your borrowers through linking their Servicers, we collect, process, normalize, and return the most accurate student loan portfolio data on the market for you to embed into your own products.
+
+> 👍
+> 
+> Check out our new [Portfolio](/reference/get-portfolio) API endpoint
+> 
+> API `v1.0.1` is the latest update, and officially releases our new Student Loan Aggregation functionality.
+> 
+> When borrowers link their Servicer accounts with [Nexus](/docs/nexus), we collect and process up-to-date loan data, which you can query and use in your products via the [Portfolio](/reference/get-portfolio) API Endpoint.
+
+## Retrieving a Borrower's Portfolio
+
+When you wish to fetch your borrowers' `Loan` objects, you'll use our [Portfolio](/reference/get-portfolio) API endpoint.
+
+The response is a simple object with a `loans` key, which provides an array of [PortfolioLoan](/docs/portfolio-loan-schema) objects:
+
+JSON
+
+`{
+  "loans": [
+    {PortfolioLoan},
+    {PortfolioLoan}
+  ]
+}
+`
+
+## How Aggregated Portfolios work
+
+When your borrowers link their servicers with [Nexus](/docs/nexus), Payitoff retrieves and processes their loan history and details from each linked Servicer. We also will keep this data synced over time so you can re-fetch Portfolio details from our API and be sure you are always receiving accurate, up-to-date information at all times.
+
+> 📘
+> 
+> Portfolios require using Nexus in your products
+> 
+> If you'd like to use Aggregated Portfolios in your products and workflows, check out our [One-day Integration Guide](/docs/one-day-integration-guide) to get started.
+> 
+> Portfolio aggregation relies on your borrowers linking their Servicers so we can collect, process, normalize, and return accurate and always up-to-date data via the [Portfolio](/reference/get-portfolio) API endpoint.
+
+> 🚧
+> 
+> Heads up! `UUID` identifiers are taking the place of `integer` ID values
+> 
+> If you've been using the Payitoff API, you may be used to calling API endpoints with `Borrower.id` parameters as unique identifiers where necessary. Some time ago, we quietly began moving toward `Borrower.uuid` identifiers by including `uuid` values in `Borrower` responses, and accepting `uuid` values wherever an endpoint previously expected an `id` parameter.
+> 
+> Because this is a patch version upgrade, your existing code for `Borrower` and `Loan` objects from API `v1` should continue to work uninterrupted. Only the newly introduced API endpoints will be enforcing the `uuid`\-only approach—this includes the Portfolio API.
+> 
+> Just a heads up that we will continue moving in this direction in subsequent updates, eventually phasing out `id` values entirely in favor of `uuid` values for all API objects.

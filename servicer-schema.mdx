@@ -1,0 +1,30 @@
+---
+title: "Servicer"
+description: "Payitoff API: Servicer Schema"
+---
+
+#### Schema Definition
+
+| Property | Type   | Format                          | Description                                |
+| -------- | ------ | ------------------------------- | ------------------------------------------ |
+| address  | object | [Address](/docs/address-schema) | Servicer's address.                        |
+| id       | string | uuid                            | A unique UUID identifier for this Servicer |
+| name     | string | Servicer's name.                |                                            |
+
+#### Example
+
+Servicer
+
+`{
+  "address": {
+    "street1": "123 Main St",
+    "street2": "Suite 501",
+    "street3": null,
+    "city": "Poughkeepsie",
+    "state": "NY",
+    "zipcode": "12345-6789"
+  },
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Great Lakes"
+}
+`

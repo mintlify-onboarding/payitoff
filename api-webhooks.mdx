@@ -1,0 +1,76 @@
+---
+title: "Webhooks"
+description: "Receive event notifications and react when they occur"
+---
+
+Payitoff uses webhooks to notify your application when important events occur that you may want to process and react to. Webhooks are particularly useful when you want to react to asynchronous events like status changes for a borrower's Enrollment Requests.
+
+You can get started using webhooks with your Payitoff integration in just 3 easy steps:
+
+1. Create a webhook endpoint in your application
+2. Use the Payitoff API to register your webhook endpoint
+3. Use the Payitoff API to test receiving webhooks of specific types
+
+## Get going with Payitoff Webhooks
+
+#### Create a webhook endpoint in your application
+
+The first step to adding webhooks to your Payitoff integration is to add a custom endpoint to your application that can receive event notifications. You'll do this in your application environment and framework just as you would any other endpoint. There are a few key considerations to be aware of.
+
+##### Your endpoint must accept `POST` requests
+
+For each notifiable event occurrence, Payitoff will `POST` data to your webhook endpoint in JSON format. All relevant details about the event will be included, and we will expect your application to confirm you received the data successfully.
+
+##### Return a `2xx` status code as quickly as possible
+
+To confirm successful receipt of an event notification, your endpoint **must** return a `2xx` HTTP status code. Any other status code will be interpreted as a failure-to-deliver. Properly confirming receipt of the event is critical, and should occur **before** any complex logic executes in your application to process the event—because such logic increases the likelihood of request timeouts.
+
+> ❗️
+> 
+> Don't process events in your endpoint code
+> 
+> We strongly advise against performing **any** event processing in your webhook endpoint code directly. You should opt for a background task or job queue to process events so your endpoint can accept and confirm receipt of every event notification as quickly as possible.
+
+#### Register your endpoint with our API
+
+You can register your webhook endpoint at any time using our [Set Webhook URL](/reference/set-webhook-url) API endpoint. The payload for registering your endpoint is quite simple:
+
+Registering your webhook endpoint
+
+`{
+  "webhook_url": "https://myapp.com/webhooks"
+}
+`
+
+You can also use our API to [fetch your registered webhook endpoint](/reference/get-webhook-url) and [remove your webhoook endpoint](/reference/delete-webhook-url).
+
+**NOTE:** Removing your webhook URL will disable receiving event notifications.
+
+#### Test your endpoint works
+
+Because your webhook endpoint is used asynchronously when events occur in _our_ system that you may want to react to, failures in your webhook endpoint may not be obvious until it is too late. At a minimum, we recommend you always test your endpoint still works in the following scenarios:
+
+* Upon initial creation of your endpoint
+* After going live in any of your environments
+* When you've made changes to webhook handling and routing code
+
+To test your webhook endpoint is responding successfully, use our [Test Webhook URL](/reference/test-webhook-url) API endpoint. You can rely on requesting a simple `test` event type for most tests.
+
+#### Simulate specific events in the Payitoff Sandbox
+
+In our **sandbox** environment, you can simulate specific supported event types, and we will issue an event notification of the requested type to your registered webhook endpoint. Check our [Test Webhook URL](/reference/test-webhook-url) API reference for supported event types.
+
+Requesting a test event notification
+
+`{
+	"event_type": "test"
+}
+`
+
+**NOTE:** In our **production** environment, requesting a webhook test for any event type other than `test` will return an error. This is to protect your production systems against processing events leading to undesirable side effects.
+
+> 🚧
+> 
+> Simulated events are fake events
+> 
+> Please note that simulating events with our [Test Webhook URL](/reference/test-webhook-url) API endpoint will always `POST` simulated date—they will have fake IDs, fake dates, and other data, and should not be expected to match any other records you've created via our API.

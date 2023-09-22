@@ -1,0 +1,181 @@
+---
+title: "Assess"
+description: "Help borrowers compare eligible Repayment Plans with Nexus.assess"
+---
+
+After you've [linked servicer accounts](/docs/nexus-link) to build a loan portfolio, it's time to offer your `Borrower` an Assessment. While you can [use our API](/docs/api-assessments) and build your own Assessment experience, `Nexus.assess` makes calculating and presenting a comparison of Repayment Plan options as easy as a function call.
+
+> 📘
+> 
+> Nexus pre-fills information we know about your borrowers
+> 
+> To make things easy for your borrowers, we will pre-fill information required to perform an Assessment. This means if you're using the API, or if a borrower has used Nexus before, we'll fill in information that's been saved before—like filing status, family size, and adjusted gross income. We'll still present these steps to the user so they can confirm or correct the information as they proceed through the workflow.
+
+### Calling `Nexus.assess`
+
+When invoking `Nexus.assess`, Nexus expects to receive a single `options` object as a parameter. This `options` object allows you to specify two callbacks:
+
+* **`onSuccess`**—a function to execute when the workflow completes successfully
+* **`onExit`**—a function to execute when your borrower exits the workflow or an error occurs
+
+Calling Nexus.assess
+
+`// Assuming you have a button your Borrower can click to Assess
+let assessButton = document.querySelector('#nexus-assess-button')
+
+// Attach click handler to invoke Nexus.assess
+assessButton.addEventListener('click', e => {
+  Nexus.assess({
+    // the function to call when borrower is done
+    onSuccess: assessSuccess,
+    // the function to call when borrower quits or error occurs
+    onExit: assessExit
+  })
+})
+`
+
+![758](/images/e3a0a0b-nexus-plans.png "nexus-plans.png")
+
+`Nexus.assess` presenting a list of eligible IDR plans.
+
+#### `onSuccess` callback
+
+When your `Borrower` finishes the `Nexus.assess` workflow—which occurs when they click the **I Want this Plan** button after reviewing and selecting a Repayment Plan—Nexus will execute the unary callback function you provide to the `onSuccess` option when invoking `Nexus.assess`.
+
+Nexus.assess — onSuccess callback
+
+`function assessSuccess(response) {
+  // maybe congratulate your borrower on choosing a plan that saves $$$
+  console.log('Assess complete')
+  console.log(response)
+}
+`
+
+#### `onSuccess` response
+
+Your `onSuccess` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`**—a `string` value indicating the workflow succeeded
+* **`result`** —an `object` that provides additional details and may change over time. Will have at least **three** properties:  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `current_plan`—a summary of their current Repayment Plan details  
+   * `requested_plan`—a summary of their chosen Repayment Plan details
+* **`status`**—a `string` value. Will always be **`"complete"`** for an `onSuccess` callback.
+
+##### Example `onSuccess` callback response for `Nexus.assess`
+
+In the example below, you can see who your `Borrower` is, what their `current_plan` looks like, and how their `requested_plan` compares. If you plan to call [Nexus.enroll](/docs/nexus-enroll) next, you'll want to grab the `requested_plan.name` value to supply to `Nexus.enroll` as their chosen `plan`.
+
+![758](/images/66f19c1-nexus-plan.png "nexus-plan.png")
+
+`Nexus.assess` presenting a more detailed comparison of a plan to the user's current repayment situation. Clicking **I want this Plan** results in the `onSuccess` response below.
+
+Nexus.assess — onSuccess response
+
+`{
+  message: "Assess complete.",
+  result: {
+    borrower: {
+      uuid: "4a3f2ae8-b72c-4db6-b46e-f76f72fcc2f7"
+    },
+    current_plan: {
+      cost_difference: null,
+      current: true,
+      lower_monthly_payment: false,
+      lower_repayment_term: false,
+      lower_total_cost: false,
+      lowest_monthly_payment: false,
+      lowest_repayment_term: true,
+      lowest_total_cost: true,
+      monthly_difference: null,
+      monthly_payment: "2621.73",
+      name: "CURRENT",
+      repayment_difference: null,
+      repayment_term: 6,
+      total_cost: "3051.15"
+    },
+    requested_plan: {
+      cost_difference: "5579.69",
+      current: false,
+      lower_monthly_payment: true,
+      lower_repayment_term: false,
+      lower_total_cost: false,
+      lowest_monthly_payment: true,
+      lowest_repayment_term: false,
+      lowest_total_cost: false,
+      monthly_difference: "2621.73",
+      monthly_payment: "0.00",
+      name: "REPAYE",
+      repayment_difference: 198,
+      repayment_term: 204,
+      total_cost: "8630.86"
+    },
+    workflow: "assess"
+  },
+  status: "complete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**
+
+#### `onExit` callback
+
+When your `Borrower` exits the `Nexus.assess` workflow—which occurs when they cancel or otherwise dismiss Nexus without completing the workflow—Nexus will execute the unary callback function you provide to the `onExit` option when invoking `Nexus.assess`.
+
+Nexus.assess — onExit callback
+
+`function assessExit(response) {
+  switch (response.status) {
+    case "incomplete":
+      // User quit the widget.
+      // Maybe save that they quit so you can prompt them to finish later.
+      break;
+    case "illegal":
+      // You asked to perform a workflow your borrower isn't ready for.
+      break;
+    case "error":
+      // You supplied an invalid Nexus key and/or Borrower UUID,
+      // or an error occurred in Nexus/Payitoff.
+      break;
+  }
+}
+`
+
+#### `onExit` response
+
+Your `onExit` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`** — a `string` indicating what occurred to trigger the exit
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `workflow`—an optional `string` value indicating what workflow a borrower was in when they exited Nexus, if they decided to bail out. Should always be present when `status` is `"incomplete"`.
+* **`status`** — a `string` value that is one of the following values:  
+   * `"error"` — Nexus received an invalid `nexus_key`, `uuid`, or encountered some other error  
+   * `"illegal"` — You have attempted to perform an action for a borrower that is not allowed, or for which the borrower is not currently ready  
+   * `"incomplete"` — Your borrower quit the widget without completing the requested workflow
+
+##### Example `onExit` callback response for `Nexus.assess`
+
+In the example below, you can see a user did not complete linking servicers and chose to exit the widget before they made it to the actual Assessment flow.
+
+Nexus.assess — onExit response
+
+`{
+  message: "You didn't complete your assessment.",
+  result: {
+    borrower: {
+      uuid: "9e0cc73c-d450-44ea-857a-3030d3674572"
+    },
+    workflow: "assess"
+  },
+  status: "incomplete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**

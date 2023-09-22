@@ -1,0 +1,46 @@
+---
+title: "Authorization Errors"
+description: "Payitoff API: Authorization Errors"
+---
+
+All Payitoff API requests must include an HTTP `Authorization` header with a `Bearer` token, such as 
+
+`Authorization: Bearer LIVELONGANDPROSPER`. 
+
+The `Bearer` token is your Payitoff API Key.
+
+If your API request neglects to provide the `Authorization` header, you will receive a `401 Unauthorized` HTTP response, and the following `AuthorizationError` response body:
+
+JSON
+
+`{
+  "error": {
+    "detail": "Please include an authorization header.",
+    "title": "Unauthorized"
+  }
+}
+`
+
+If your API request provides an `Authorization` header, but neglects to include the `Bearer` token, you will receive a `401 Unauthorized` HTTP response, and the following `AuthorizationError` response body:
+
+JSON
+
+`{
+  "error": {
+    "detail": "Please include a Bearer token in your header.",
+    "title": "Unauthorized"
+  }
+}
+`
+
+If your API request provides an `Authorization` header, but includes an invalid `Bearer` token, you will receive a `401 Unauthorized` HTTP response, and the following `AuthorizationError` response body:
+
+JSON
+
+`{
+  "error": {
+    "detail": "Invalid token.  Please check and try again.",
+    "title": "Unauthorized"
+  }
+}
+`

@@ -1,0 +1,12 @@
+---
+title: "Errors"
+description: "All you need to know about errors in the Payitoff API."
+---
+
+Errors can occur for many reasons—forgetting authorization headers, omitting required parameters to certain endpoints, malformed URLs, etc.
+
+All API Errors should return an appropriate HTTP status code to indicate the type of error encountered, and additional details provided in an response body of the following shape:
+
+| Property | Type   | Any of                                           |
+| -------- | ------ | ------------------------------------------------ |
+| error    | object | [AuthorizationError](/docs/authorization-errors) |

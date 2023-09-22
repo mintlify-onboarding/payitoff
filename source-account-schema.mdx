@@ -1,0 +1,37 @@
+---
+title: "SourceAccount"
+description: "Payitoff API: SourceAccount Schema"
+---
+
+A borrower's source account is the source of funding to pay down student loans. These may be checking, savings or brokerage accounts.
+
+> 🚧
+> 
+> Use `SourceAccountPayload` for to create a `SourceAccount`
+> 
+> When creating `SourceAccount` objects via API, send a `SourceAccountPayload` as your request body. You'll receive a [SourceAccount](/docs/source-account-schema) as a response.
+
+#### Schema Definition
+
+| Property                 | Type    | Format                                                                                              | Description                                            |
+| ------------------------ | ------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| account\_number\_last\_4 | string  | The last 4 digits of a borrower's account number at a financial institution.                        |                                                        |
+| id                       | string  | uuid                                                                                                | A UUID value that identifies a SourceAccount.          |
+| name\_on\_account        | string  | Name of account at financial institution.                                                           |                                                        |
+| payments\_supported      | boolean | Can this account be used to make payments?                                                          |                                                        |
+| routing\_number          | string  | The borrower's routing number at a financial institution.**It must be exactly 9 digits in length.** |                                                        |
+| type                     | string  | brokeragecheckingsavings                                                                            | Type of account at a borrower's financial institution. |
+
+#### Example
+
+SourceAccount
+
+`{
+  "account_number_last_4": "4287",
+  "id": "1d40b0bd-46c4-4cde-9467-5b000800aee9",
+  "name_on_account": "John Q Public",
+  "payments_supported": true,
+  "routing_number": "123456789",
+  "type": "checking"
+}
+`

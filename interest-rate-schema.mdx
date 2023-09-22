@@ -1,0 +1,23 @@
+---
+title: "InterestRate"
+description: "Payitoff API: InterestRate Schema"
+---
+
+An `InterestRate` object describes both what has been retrieved from Servicer Aggregation, as well as any other pertinent information we can provide based on our knowledge of federal repayment programs.
+
+#### Schema Definition
+
+| Property  | Type   | Format  | Description                                                                                                                                                                        |
+| --------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| effective | string | decimal | The interest rate as provided by a loan's Servicer.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision.                                |
+| original  | string | decimal | The interest rate that should apply to a loan based on its federal Repayment Plan.**NOTE:** As of v1.0.1, all float values are returned as decimal strings with 2-digit precision. |
+
+#### Example
+
+InterestRate
+
+`{
+  "effective": "6.75",
+  "original": "6.75"
+}
+`

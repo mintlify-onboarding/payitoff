@@ -1,0 +1,31 @@
+---
+title: "IncomeCertificationPayload"
+description: "Payitoff API: IncomeCertificationPayload Schema"
+---
+
+The `IncomeCertificationPayload` describes the request payload required when uploading a file to our API for a `Borrower`'s Income Certification, which is required when submitting IDR Enrollment Requests.
+
+> 🚧
+> 
+> Use `IncomeCertificationPayload` for API `POST`, `PUT`, and `PATCH` requests
+> 
+> When creating and updating a `Borrower` with supporting Income Certification document(s), you must use the `IncomeCertificationPayload` object as your payload in the _singular_ `income_certification` property of a `BorrowerPayload` payload.
+> 
+> When a `Borrower` is returned by the API, the `Borrower` object will hold a _plural_ `income_certifications` property with [IncomeCertification object(s)](/docs/income-certification-schema) within.
+
+#### Schema Definition
+
+| Property | Type   | Format                                     | Description                                                                                          |
+| -------- | ------ | ------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| file     | string | byte                                       | Base64-encoded file object to upload.                                                                |
+| type     | string | pay\_stubtax\_returndetermination\_summary | The type of supporting income/unemployment documentation uploaded for Enrollment or recertification. |
+
+#### Example
+
+IncomeCertificationPayload
+
+`"income_certification": {
+  "file": "iVBORw0KGgoAAAANSUhEUgAABHIAAAH6CAYAAABrkGv...",
+  "type": "tax_return"
+}
+`

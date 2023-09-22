@@ -1,0 +1,33 @@
+---
+title: "PaymentPayload"
+description: "Payitoff API: PaymentPayload Schema"
+---
+
+A `PaymentPayload` is the request body required when [creating](/reference/create-payment) or [editing](/reference/edit-payment) a [Payment](/docs/payment-schema) to a `Servicer` using a `Borrower`\-owned `SourceAccount`.
+
+#### Schema Definition
+
+Properties in **bold** are required.
+
+| Property                | Type   | Format  | Description                                                                                                                       |
+| ----------------------- | ------ | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **amount**              | string | decimal | The total amount that should be paid on the scheduled\_date.                                                                      |
+| **scheduled\_date**     | string | date    | Date the payment should occur. This cannot be a weekend or a [bank holiday](https://www.frbservices.org/about/holiday-schedules). |
+| **servicer\_id**        | string | uuid    | A UUID that identifies the Servicer who should receive the payment.                                                               |
+| **source\_account\_id** | string | uuid    | A UUID that identifies the _Borrower\-owned_ SourceAccount from which funds will be transferred.                                  |
+
+#### Example
+
+A valid `PaymentPayload` should appear as the JSON value of a `payment` key in your request.
+
+PaymentPayload
+
+`{
+	"payment": {
+		"amount": "123.45",
+		"scheduled_date": "2021-08-28",
+		"servicer_id": "7228ed9a-51f4-4829-91af-c615bacf9c34",
+		"source_account_id": "ada01d34-b630-43fb-ad87-dc5d19cbfc86"
+	}
+}
+`

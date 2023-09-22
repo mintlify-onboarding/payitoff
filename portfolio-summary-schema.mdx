@@ -1,0 +1,30 @@
+---
+title: "PortfolioSummary"
+description: "Payitoff API: PortfolioSummary Schema"
+---
+
+A `PortfolioSummary` object provides a high-level overview of the total financial impact of a borrower's entire loan portfolio.
+
+> 📘
+> 
+> Our Portfolio API to provides richer, more detailed information of a borrowers entire loan portfolio. All details are now grouped by the Servicers they belong to, so you can see the full picture of each servicer who holds a borrower's loans. The `PortfolioSummary` provides a high-level total of the entire portfolio.
+
+#### Schema Definition
+
+| accrued\_interest    | string | decimal | The total accrued interest reported by _all servicers_. Included in outstanding\_balance.                                          |
+| -------------------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| current\_principal   | string | decimal | The total outstanding principal balance owed to _all servicers_. Included in outstanding\_balance.                                 |
+| outstanding\_balance | string | decimal | The total outstanding balance owed to _all servicers_. Includes accrued\_interest and current\_principal.                          |
+| monthly\_payment     | string | decimal | The total estimated monthly payment owed to _all servicers_. This is the total financial impact of a borrower's student loan debt. |
+
+#### Example
+
+PortfolioSummary
+
+`{
+  "accrued_interest": "345.88",
+  "current_principal": "73975.70",
+  "outstanding_balance": "74321.58",
+  "monthly_payment": "445.95"
+}
+`

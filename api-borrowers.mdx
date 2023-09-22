@@ -1,0 +1,64 @@
+---
+title: "Borrowers"
+description: "All you need to know about Borrowers and the Payitoff API"
+---
+
+A `Borrower` is a person who has one or more federal student loans.
+
+`Borrowers` can be created with very little data. We recommend always supplying a `first_name` and `last_name` when you create a `Borrower`, if only so you'll be able to tell your `Borrowers` apart when you're integrating our API and Nexus into your products and workflows.
+
+> 🚧
+> 
+> Use [BorrowerPayload](/docs/borrower-payload-schema) for API `POST`, `PUT`, and `PATCH` requests
+> 
+> For historical reasons, the request payload required when creating and updating a `Borrower` via our v1 API has a different shape than the response object. Thus, you must use a [BorrowerPayload](/docs/borrower-payload-schema) for your API request payloads, and expect a `Borrower` object as the response.
+> 
+> This discrepancy will be corrected in API v2.
+
+#### Assessments
+
+To perform an Assessment for a `Borrower`, the minimum required fields you should supply in your `BorrowerPayload` are as follows:
+
+* `agi` — their Adjusted Gross Income
+* `filing_status` — Tax Filing Status from their last federal income tax return
+* `family_size` — the Family Size claimed on their taxes
+* `state_of_residence` — the state in which they reside
+
+For running an `Assessment` that will consider `spouse` information, please see the `Spouses` section below.
+
+For testing purposes and initial integration guidance, these 4 fields, along with `first_name` and `last_name` will be sufficient. However, we recommend providing as much information as possible in a production environment. Certain actions, like Enrollments, require more data about the `Borrower`, and providing that information up front can save you—and your `Borrowers`—time, eliminating slower and awkward experiences by minimizing the API calls you must make.
+
+#### PSLF
+
+A qualifying employer is necessary to determine PSLF eligibility and track PSLF-eligible payments. You can use the [PSLF Employer Search](/reference/pslf-employer-search) API endpoint to check if `Borrower` employers qualify for PSLF eligibility.
+
+#### Social Security Numbers
+
+All SSNs submitted via API—and collected by Nexus—are encrypted and stored securely. For security purposes and the protection of your `Borrower`, SSN values are not returned in `Borrower` response objects.
+
+#### Spouses
+
+If you would like a `Borrower` spouse and `spouse_agi` to be considered in Assessment operations, you must update your `Borrower` with a `filing_status` of `married_filing_jointly` or `married_filing_separately`.
+
+When creating or updating a `Borrower` and providing a `spouse_agi`, `filing_status` **must not** be `single`, otherwise our system will ignore the `spouse_agi` when performing certain operations for which `spouse_agi` is important and otherwise considered.
+
+If a borrower's spouse has federal loans, you can get an accurate assessment calculation by asking the borrower for the Spouse Loan Balance and then:
+
+1. [Creating a new borrower (the spouse) via the API](/reference/create-borrower) with the same `family_size` and `filing_status`
+2. [Creating a Direct loan manually and setting the outstanding principal to be the Spouse Loan Balance entered by the borrower](/reference/create-loans). All other fields can be mocked, since only the balance is used in the calculation. Having the most accurate information will provide the best results but if you must mock, we recommend using these values:  
+   * `loan_type` — Direct Stafford Unsubsidized  
+   * `interest_rate` — 6.0  
+   * `original_principal` — `Spouse Loan Balance`  
+   * `outstanding_interest` — 0  
+   * `outstanding_principal` — \`Spouse Loan Balance
+3. [Updating the original borrower with the spouse ID of the newly created spouse record](/reference/update-borrower-put)
+
+#### `IncomeCertifications`
+
+When uploading `IncomeCertifications` via API, please note that the parameter is _singular_ in the request body and requires a [IncomeCertificationPayload payload](/docs/income-certification-payload-schema), but _plural_ in the `Borrower` response object and returns an [IncomeCertification object](/docs/income-certification-schema) . We currently support uploading only a single `IncomeCertification` at a time. If multiple `IncomeCertifications` are uploaded over subsequent requests, we will _only_ use the _most recent_ one.
+
+We will support a future case where multiple `IncomeCertifications` may be uploaded, and a subset chosen by the `Borrower` as the documentation to submit with an Enrollment Request. Thus, to avoid future API changes, the `Borrower` response object returns `income_certifications` as an `array`.
+
+#### `FinancialDetails`
+
+For historical reasons, `FinancialDetails` are returned as a nested object under the `financial_details` property. Future versions of the API will resolve this discrepancy.

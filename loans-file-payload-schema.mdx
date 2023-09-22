@@ -1,0 +1,29 @@
+---
+title: "LoansFilePayload"
+description: "Payitoff API: LoansFilePayload Schema"
+---
+
+When using our API to [Create Loans for a Borrower](/reference/post%5Fborrowers-borrower-id-loans), you can supply a `LoansFilePayload` object which is and encoded MyStudentData (MSD) file.
+
+> 🚧
+> 
+> Use `LoansFilePayload` for API `POST` requests
+> 
+> When creating `Loans` for `Borrowers` via the [Create Loans](/reference/post%5Fborrowers-borrower-id-loans) API endpoint, you must supply loan details in the shape of a `LoansFilePayload`.
+> 
+> You will receive an array of [Loan](/docs/loan-schema) objects in the API response.
+
+#### Schema Definition
+
+| Property | Type   | Format                              | Description |
+| -------- | ------ | ----------------------------------- | ----------- |
+| loans    | string | A Base64-encoded MyStudentData file |             |
+
+#### Example
+
+LoansFilePayload
+
+`{
+  "loans": "UGF5aXRvZmYgZ2l2ZXMgYmV0dGVyIGJvcnJvd2VyIG91dGNvbWVzIQo=",
+}
+`

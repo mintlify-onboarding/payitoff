@@ -1,0 +1,18 @@
+---
+title: "BadLoanRequest Error"
+description: "Payitoff API: BadLoanRequest Error"
+---
+
+When creating `Loan` objects for a `Borrower`, you must provide a `LoanRequest` as your request body payload.
+
+If you attempt to create `Loan` objects for a `Borrower` without providing all the required parameters, you will receive a `400 Bad Request` error, and a `BadLoanRequest` response, as follows:
+
+JSON
+
+`{
+  "error": {
+    "detail": "Please provide loan params",
+    "title": "Bad Request"
+  }
+}
+`

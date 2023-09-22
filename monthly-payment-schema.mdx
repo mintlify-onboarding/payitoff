@@ -1,0 +1,25 @@
+---
+title: "MonthlyPayment"
+description: "Payitoff API: MonthlyPayment Schema"
+---
+
+A `MonthlyPayment` object describes both what has been retrieved from Servicer Aggregation, as well as any other pertinent information we can interpret and calculate from collected data to accurately describe each [PortfolioLoan](/docs/portfolio-loan-schema) object.
+
+#### Schema Definition
+
+| Property           | Type           | Format                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Description                                                                                                                                                               |
+| ------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| estimated          | boolean        | Indicates if the scheduled\_amount shown is a calculated estimate or confirmed as the exact dollar amount expected by the servicer.**NOTE:** Every servicer calculates and exposes a borrower's monthly payment in different ways. Payitoff uses a variety of intelligent heuristics to provide the most accurate scheduled\_amount. When we are able to confirm the monthly payment is correct _to the cent_, estimated will be false. Otherwise, estimated will be true. |                                                                                                                                                                           |
+| next\_payment\_due | string or null | date                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | A Date string indicating the next known date on which a payment is due.                                                                                                   |
+| scheduled\_amount  | string         | decimal                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | The scheduled monthly payment a borrower is expected to pay, as reported by their Servicer.**NOTE:** Money values are returned as decimal strings with 2-digit precision. |
+
+#### Example
+
+MonthlyPayment
+
+`{
+  "estimated": true,
+  "next_payment_due": "2022-04-01",
+  "scheduled_amount": "238.00"
+}
+`

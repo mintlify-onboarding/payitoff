@@ -1,0 +1,38 @@
+---
+title: "Payments"
+---
+
+With our Payments functionality, you can now rapidly build a number of payments-related activities for Borrowers into your products and services:
+
+* add Borrower-owned `SourceAccounts` to fund payments
+* activate and deactivate Autopay
+* make one-time `Payments` using Borrower funds
+* create `PaymentSeries` that follow a recurring schedule each month
+* create `BatchPayments` using third-party, employer, and business `SourceAccounts`
+
+> 👍
+> 
+> Payments Program Membership Required
+> 
+> These features require membership in the Payitoff Payments Program. Please reach out to [\[email protected\]](/cdn-cgi/l/email-protection#6516040900162515041c0c110a03034b0c0a) or Customer Success if you're interested in joining the Payments Program.
+> 
+> You'll also need an API Key and Nexus Key to build Payments into your products and servicers. If you don't have one, please reach out to [\[email protected\]](/cdn-cgi/l/email-protection#d0a3b1bcb5a390a0b1a9b9a4bfb6b6feb9bf).
+
+## How Payments Work
+
+Integrating Payments into your products and services requires a few different steps and careful attention to detail.
+
+Let's take a quick look at the steps you'll want to follow to prepare a `Borrower` for having payment information ready and usable.
+
+#### Use `Nexus` to link your Borrowers with their Servicers
+
+To power payments, all Borrowers must be linked to their Servicers using [Nexus](/docs/nexus-link), our JavaScript widget which takes all the hassle out of connecting your Borrowers and building Loan Portfolios—and keeping them up-to-date.
+
+#### Determine if you need a `Payment`, a `PaymentSeries`, or a `BatchPayment`
+
+| Scenario                                                                                   | SourceAccount Owner                                                                             | Solution                                     |
+| ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| I want to make a payment for _one_ Borrower                                                | The Borrower owns the SourceAccount from which funds will be transferred.                       | [Payment](/docs/payment-schema)              |
+| I want to make a payment for _one_ Borrower on a regularly recurring schedule every month. | The Borrower owns the SourceAccount from which funds will be transferred.                       | [PaymentSeries](/docs/payment-series-schema) |
+| I want to make a payment for _one_ Borrower                                                | My business or another third-party owns the SourceAccount from which funds will be transferred. | [BatchPayment](/docs/batch-payment-schema)   |
+| I want to make a payment for _many_ Borrowers                                              | My business or another third-party owns the SourceAccount from which funds will be transferred. | [BatchPayment](/docs/batch-payment-schema)   |

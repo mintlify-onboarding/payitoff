@@ -1,0 +1,65 @@
+---
+title: "FinancialDetails"
+description: "Payitoff API: FinancialDetails Schema"
+---
+
+> 🚧
+> 
+> For historical reasons, `FinancialDetails` are returned as a nested object in `Borrower` responses. but most properties are accepted as direct `BorrowerPayload` properties when creating and updating your `Borrower` via API.
+> 
+> This discrepancy will be corrected in API v2.
+
+#### Schema Definition
+
+| Property                | Type    | Format                                                                                        | Description                                                                                                                                                                                                                                           |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| agi                     | number  | float                                                                                         | The Borrower's Adjusted Gross Income.                                                                                                                                                                                                                 |
+| children                | integer | int32                                                                                         | The number of children (including unborn) a Borrower has._Defaults to 0._                                                                                                                                                                             |
+| dependents              | integer | int32                                                                                         | The number of non-children dependents who receive more than half their support from the Borrower._Defaults to 0._                                                                                                                                     |
+| employer\_state         | string  | State in which the Borrower's current employer is located.                                    |                                                                                                                                                                                                                                                       |
+| extra\_monthly\_payment | number  | float                                                                                         | The amount of additional payment, if any, the Borrower wishes to make on their loan(s).                                                                                                                                                               |
+| family\_size            | integer | int32                                                                                         | Number of family members, including the Borrower, their spouse, their children (even unborn), and any other dependents who receive more than half of their support from the Borrower._Defaults to 1._                                                 |
+| filing\_status          | string  | singlehead\_of\_householdmarried\_filing\_jointlymarried\_filing\_separately                  | Federal tax filing status of Borrower._Defaults to single._                                                                                                                                                                                           |
+| income\_growth          | number  | float                                                                                         | Expected income growth per year, as a percentage._Defaults to 5.0._                                                                                                                                                                                   |
+| new\_borrower\_date     | string  | date                                                                                          | The date on which the Borrower first took out student loans.                                                                                                                                                                                          |
+| pslf                    | boolean | Instructs Payitoff to include PSLF forgiveness in Assessment calculations._Defaults to null._ |                                                                                                                                                                                                                                                       |
+| refinance\_rate         | number  | float                                                                                         | TODO                                                                                                                                                                                                                                                  |
+| refinance\_term         | integer | int32                                                                                         | TODO                                                                                                                                                                                                                                                  |
+| related\_to\_major      | boolean | TODO                                                                                          |                                                                                                                                                                                                                                                       |
+| spouse\_agi             | number  | float                                                                                         | If the Borrower has a spouse, the spouse's Adjusted Gross Income.**NOTE:** family\_size should be at least 2 if providing spouse\_agi to be included in Assessment calculations. You should also choose one of the married\_\* filing\_status values. |
+| state\_of\_residence    | string  | State in which the borrower legally resides.                                                  |                                                                                                                                                                                                                                                       |
+| tcli\_enabled           | boolean | Instructs Payitoff to include TCLI forgiveness in Assessment calculations._Defaults to null._ |                                                                                                                                                                                                                                                       |
+| tcli\_end\_year         | string  | date                                                                                          | TODO                                                                                                                                                                                                                                                  |
+| tcli\_start\_year       | string  | date                                                                                          | TODO                                                                                                                                                                                                                                                  |
+| teaching\_level         | string  | elementarymiddlesecondary                                                                     | If Borrower is a teacher, what level of education they teach.                                                                                                                                                                                         |
+| teaching\_state         | string  | If Borrower is a teacher, the state where employing school is located.                        |                                                                                                                                                                                                                                                       |
+| teaching\_subject       | string  | englishmathothersciencespecial\_education                                                     | If Borrower is a teacher, the subject they teach.\`                                                                                                                                                                                                   |
+
+#### Example
+
+FinancialDetails
+
+`{
+  "agi": 45500.44,
+  "children": 1,
+  "dependents": 0,
+  "employer_state": null,
+  "extra_monthly_payment": 0.00,
+  "family_size": 2,
+  "filing_status": "single",
+  "income_growth": null,
+  "new_borrower_date": null,
+  "pslf": null,
+  "refinance_rate": null,
+  "refinance_term": null,
+  "related_to_major": null,
+  "spouse_agi": 24000.00,
+  "state_of_residence": "NV",
+  "tcli_enabled": null,
+  "tcli_end_year": null,
+  "tcli_start_year": null,
+  "teaching_level": null,
+  "teaching_state": null,
+  "teaching_subject": null
+}
+`

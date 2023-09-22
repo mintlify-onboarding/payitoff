@@ -1,0 +1,17 @@
+---
+title: "LoanStatusHistory"
+description: "Payitoff API: LoanStatusHistory Schema"
+---
+
+`Loan` objects change status over time—they can move in and out of repayment, deferment, forbearance, and more.
+
+The `LoanStatusHistory` object provides a view on the status changes a `Loan` has encountered over time, returning those status changes as an object of key-value pairs, in which the status event is the `value` and the date on which the status event occurred is the `key`:
+
+LoanStatusHistory
+
+`{
+  "2014-05-01": "In Repayment",
+  "2016-08-01": "Forbearance",
+  "2017-04-01": "In Repayment"
+}
+`

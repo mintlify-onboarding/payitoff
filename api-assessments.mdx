@@ -1,0 +1,28 @@
+---
+title: "Assessments"
+description: "Understand Repayment and Forgiveness Options to improve Borrowers' lives"
+---
+
+Assessments are the most critical piece in a Borrower's journey to eliminate student loan debt and improve their current and future financial picture. Our API allows your products to present Repayment and Forgiveness Options available to your borrower, determine eligibility, and help your borrowers choose the best possible outcome for their unique financial situations and goals.
+
+#### Forgiveness Options
+
+When you query our [Get Forgiveness Options](/reference/get-forgiveness-options) API endpoint, you'll receive a JSON response object with a `forgiveness_options` property, which provides an `array` of [ForgivenessOption](/docs/forgiveness-option-schema) objects.
+
+#### Repayment Options
+
+When you query our [Get Repayment Options](/reference/get-repayment-options) API endpoint, you'll receive a JSON response object with two properties—`original` and `repayment_options`. The `original` property provides an `OriginalLoanSummary`, a high-level look at the key financial properties of a `Loan` and its current Repayment Plan. The `repayment_options` property provides an `array` of [RepaymentOption](/docs/repayment-option-schema) objects with a great deal of detail on a given Repayment Plan so you can provide detailed Assessments to your borrowers.
+
+#### Why are there two Monthly Payment properties?
+
+When you look at `RepaymentOption` objects, you will notice there are two monthly payment properties—`scheduled_monthly_payment` and `starting_monthly_payment`. Though confusing, these values are provided separately to help a borrower make the best financial decisions for their futures, not just during this historically anomalous time.
+
+##### `scheduled_monthly_payment`
+
+During the ongoing COVID forbearance period—currently scheduled to end 2023-06-30—`scheduled_monthly_payment` provides the monthly payment a borrower would pay _under normal conditions_.
+
+##### `starting_monthly_payment`
+
+On the other hand, `starting_monthly_payment` provides the monthly payment a borrower is expected to pay _during COVID forbearance_ (which should always be `0.00`).
+
+When the COVID forbearance period ends, both `scheduled_monthly_payment` and `starting_monthly_payment` should hold identical values.

@@ -1,0 +1,139 @@
+---
+title: "Nexus"
+sidebarTitle: "Overview"
+description: "Get to know Nexus, our drop-in JavaScript widget."
+---
+
+<Note>
+  Check out our [Integration Guides](/docs/integration-guides)
+
+  While these pages document how to include, initialize, and use Nexus, we highly recommend checking out our Integration Guides to familiarize yourself with the Payitoff domain, and how you can [use Nexus in 10 minutes](/docs/integrate-in-10-minutes), or [use Nexus with our API](/docs/build-your-own-experience) to build custom experiences where it matters most to you, and leave the heavy lifting to us.
+</Note>
+
+## How to use Nexus
+
+There are a number of ways you can use Nexus in your own products.
+
+Nexus provides _three_ distinct workflows you can use:
+
+### [Link](/docs/nexus-link) — Get accurate loan portfolio data and speed up Enrollments
+
+`Nexus.link` is the function to call if all you want to do is enable borrowers to link their servicer accounts and build a [Loan Portfolio](/docs/api-portfolios).
+
+### [Assess](/docs/nexus-assess) — Calculate, present, and compare Income-Driven Repayment Options
+
+`Nexus.assess` is the function to call if you want to help borrowers view eligible Repayment Options, choose a Repayment Plan, and are not building your own Assessment UX on top of our [Get Repayment Options](/reference/get-repayment-options) API endpoint. 
+
+If we already have a borrower's [Loan Portfolio](/docs/api-portfolios) built out, we'll skip linking—otherwise, you can call `Nexus.assess` with a new borrower and we will walk them through linking their servicer account(s) before calculating and presenting Repayment Plan comparisons.
+
+### [Enroll](/docs/nexus-enroll) — Submit an Enrollment Request for a new IDR plan
+
+`Nexus.enroll` is the function to call when your end goal is to submit an Enrollment Request on behalf of a borrower who wants to switch to an Income-Driven Repayment Plan.
+
+#### If you do not know what plan your borrower wants
+
+You can call `Nexus.enroll` with callback functions only, and _omit_ the `plan` parameter. This will instruct `Nexus.enroll` to walk a borrower through linking servicers if necessary, present Repayment Options, allow the borrower to choose a Repayment Plan, and culminates in walking the borrower through submitting Enrollment Requests.
+
+#### If you already know what plan your borrower has chosen
+
+In situations where you're providing your own Assessment UX on top of our API, or you remembered what plan a user chose when previously using [Nexus.assess](/docs/nexus-assess)—you can call `Nexus.enroll` and provide the `plan` parameter. This will save the user some steps they've already completed, and will skip the Assess workflow entirely. Nexus will have the borrower link their servicer account(s) if they haven't already, and will then walk them through all the necessary steps to submit Enrollment Requests.
+
+Regardless of whether the borrower completes or exits the workflow you've called, Nexus will dismiss itself automatically and trigger your `onSuccess` or `onExit` callback function(s), depending on whether the workflow is completed or exited prematurely.
+
+<Note>
+
+  **Which Nexus workflow should I call?**
+
+  When thinking about which Nexus workflow to call, think about when you want the borrower to **exit** the Nexus widget.
+
+  Only want them to link their servicer accounts and then be brought back to your app? _Use `Nexus.link`_.
+
+  Do you want them to view an Assessment and choose a Repayment Plan, then be brought back to your app? _Use `Nexus.assess`_.
+
+  Do you want them to submit an Enrollment Request? _Use `Nexus.enroll`_.
+</Note>
+
+## Get Started
+
+### Include Nexus `script` tag
+
+In local development, staging, and testing environments, you'll want to include the **sandbox** version of Nexus:
+
+```html HTML
+
+`<script src="https://payitoff-cdn.io/sandbox/nexus/js/v1"></script>
+`
+
+Payitoff's Sandbox is your development playground—it will never connect to live Servicer websites, it won't submit real Enrollment Requests, it always returns dummy data where necessary, and you'll use a Sandbox Nexus Key that only works in our Sandbox environment. To use curated dummy data, check out our [guide to using data snapshots](/docs/data-snapshots).
+
+#### Going to production?
+
+When you're ready to go to production with your Nexus-powered integration, you'll need a production Nexus Key and you'll want to update your `script` tag's `src` property to use the production URL:
+
+HTML
+
+`<script src="https://payitoff-cdn.io/nexus/js/v1"></script>
+`
+
+> 🚧
+> 
+> Don't have your Nexus Key?
+> 
+> Please contact [\[email protected\]](/cdn-cgi/l/email-protection#aeddcfc2cbddeedecfd7c7dac1c8c880c7c1) and we'll get that sorted.
+
+### Initialize Nexus
+
+With your Nexus Key, and the Nexus script tag in your page, you can now initialize Nexus in your app. Nexus works on behalf of your `Borrowers` to enable linking every Servicer they have relationships with, providing [Assessments](/docs/api-assessments), creating Enrollment Requests, and more in the future.
+
+Initializing Nexus is a simple JavaScript call away. Simply provide an `options` object with the following two properties:
+
+* **`nexus_key`**—your company's individual Nexus Key
+* **`borrower`**—the unique identifier of a `Borrower` you're invoking Nexus for
+
+> 📘
+> 
+> The instantiated Nexus object can only operate on a single `Borrower` at a time.
+
+#### Initialize Nexus with Payitoff UUID
+
+If you already have a Payitoff `UUID` for your `Borrower`—for example, because you create `Borrower` records with our API and store the `UUID` values—you can supply it along with your Nexus key to initialize Nexus to walk your borrower through Nexus `link`, `assess`, and `enroll` workflows.
+
+Initialize Nexus with Payitoff UUID
+
+`Nexus({
+  nexus_key: 'GIVINGHERALLSHESGOT',
+  borrower: '72edfd83-eca2-4383-a015-ff7a230504c2'
+})
+`
+
+On load, Nexus will try to find a `Borrower` using the `borrower` identifier you supply—if it looks like a `UUID` from our API. So, if you supply a Payitoff `UUID` as your `borrower` value, we'll find the associated `Borrower` and verify it belongs to your account, then Nexus will be ready to use.
+
+**NOTE:** If you supply a `UUID` that can't be found, we'll treat it as if you'd supplied an _external_ unique identifier (_see next section_).
+
+#### Initialize Nexus with _your own_ unique borrower identifiers (and create new borrowers!)
+
+In response to requests from our partners, we've recognized that it can be somewhat awkward to create a `Borrower` via our API _before_ invoking Nexus. To solve this use-case, we've improved Nexus to allow you to provide _your own **unique** identifiers_ in the `borrower` property when initializing Nexus.
+
+Initialize Nexus with your own ID
+
+`Nexus({
+  nexus_key: 'GIVINGHERALLSHESGOT',
+  borrower: 'jamestkirk1966'
+})
+`
+
+> 🚧
+> 
+> Using Nexus, but not using our API?
+> 
+> If you do not currently use the Payitoff API, but want to integrate Nexus into your product(s), _this is the Nexus initialization option you want to be using_.
+> 
+> **NOTE:** We still encourage you to save the `borrower.uuid` value that is returned in _all_ Nexus callback responses, as Payitoff `UUID` values are the only supported way to interact with our API.
+
+If the `borrower` identifier you supply doesn't look like a valid `UUID` from our system, or no `Borrower` is found, we'll look up a `Borrower` using the `borrower` value as an _external_ identifier. We manage this internally, but any value you supply that doesn't match our own `UUID`s will result in either fetching **or creating** a `Borrower` with your `borrower` value as their external ID.
+
+**To recap**, you can provide your own unique `borrower` value from your system, and we will create, save, and lookup your `Borrowers` using that value in Nexus. 
+
+* If you are showing Nexus to users who have never used Nexus before, we will create `Borrower` records for you, tied to your partner account. We will return the Payitoff `borrower.uuid` in Nexus callback responses so you can save our `UUID` values to your user records for later use.
+* All subsequent interactions and initialization of Nexus will always find that same `Borrower` record with the external ID you supplied as your `borrower` value.
+* Whether the `borrower` value is a Payitoff `UUID` or your own value, **it must be unique**. If you provide the same `borrower` value when initializing Nexus for multiple users in your system, a `Borrower` record will only be created _once_—and every subsequent interaction from multiple users in your app will update the _same_ `Borrower` record. Don't do that.

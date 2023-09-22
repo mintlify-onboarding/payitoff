@@ -1,0 +1,83 @@
+---
+title: "RepaymentOption"
+description: "Payitoff API: RepaymentOption Schema"
+---
+
+A `RepaymentOption` object returns all the financial details of a given Repayment Plan, properly calculated for your `Borrower` and their unique situation, allowing you to provide a unique Assessment tailored just for their needs—enabling them to compare various Repayment Plans against their current Repayment Plan, and choose a Plan that works best for their goals and needs.
+
+> 📘
+> 
+> Understand `total_paid` vs `total_cost`
+> 
+> **`total_paid`** is the sum of all monthly payments a borrower will make on a loan's current Repayment Plan over its lifetime.
+> 
+> With Income-Driven Repayment plans, there is sometimes a "tax bomb" at the end of their repayment term—any outstanding balance is forgiven, but treated as taxable income. Thus, **`total_cost`** provides the sum of `total_paid` plus the taxes owed on that forgiven amount (which is calculated and provided in the `amount_forgiven` and `estimated_tax_liability` properties). In other words,`total_cost` is the bottom line amount a borrower will pay to dispense of their loan on a `RepaymentOption`.
+
+> 📘
+> 
+> Understand `scheduled_monthly_payment` vs `starting_monthly_payment`
+> 
+> When you look at `RepaymentOption` objects, you will notice there are two monthly payment properties—`scheduled_monthly_payment` and `starting_monthly_payment`. Though confusing, these values are provided separately to help a borrower make the best financial decisions for their futures, not just during this historically anomalous time.
+> 
+> During the ongoing COVID forbearance period—currently scheduled to end 2023-06-30—**`scheduled_monthly_payment`** provides the monthly payment a borrower would pay _under normal conditions_.
+> 
+> On the other hand, **`starting_monthly_payment`** provides the monthly payment a borrower is expected to pay _during COVID forbearance_ (which should always be `0.00`).
+> 
+> When the COVID forbearance period ends, both `scheduled_monthly_payment` and `starting_monthly_payment` should hold identical values.
+
+#### Schema Definition
+
+| Property                    | Type    | Format                                                                     | Description                                                                                                                                                                                                              |
+| --------------------------- | ------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| action\_items               | array   | _Deprecated. Will be removed in API v2._                                   |                                                                                                                                                                                                                          |
+| amount\_forgiven            | number  | float                                                                      | Total amount of outstanding Loan balance that will be forgiven at the end of the current Repayment Plan's term.                                                                                                          |
+| annual\_snapshots           | array   | TODO                                                                       | TODO                                                                                                                                                                                                                     |
+| eligible\_loans             | array   | [Loan](/docs/loan-schema)                                                  | An array of Loan objects which meet the eligibility criteria for this RepaymentOption.                                                                                                                                   |
+| estimated\_tax\_liability   | number  | float                                                                      | Estimated tax bomb, or the amount a Borrower will have assessed as income based on total amount forgiven by their Repayment Plan.                                                                                        |
+| final\_monthly\_payment     | number  | float                                                                      | The amount of the final monthly payment.                                                                                                                                                                                 |
+| ineligible\_loans           | array   | [Loan](/docs/loan-schema)                                                  | An array of Loan objects which **do not** meet the eligibility criteria for this RepaymentOption.                                                                                                                        |
+| ineligible\_reasons         | array   | string                                                                     | An array of reasons Loans or a Borrower may not meet eligibility criteria for this RepaymentOption.                                                                                                                      |
+| name                        | string  | The name of the Repayment Plan this RepaymentOption represents.            |                                                                                                                                                                                                                          |
+| number\_of\_payments        | integer | int32                                                                      | Total number of payments that will be made over the course of the repayment term.                                                                                                                                        |
+| pslf\_eligible              | boolean | Is this RepaymentOption eligible for PSLF forgiveness?_Defaults to false._ |                                                                                                                                                                                                                          |
+| repayment\_plan             | object  | [RepaymentPlan](/docs/repayment-plan-schema)                               | A RepaymentPlan object with full details on the Repayment Plan this RepaymentOption represents.                                                                                                                          |
+| scheduled\_monthly\_payment | number  | float                                                                      | The regular monthly payment a borrower would pay _under normal conditions_, but is unlikely to pay during COVID forbearance.                                                                                             |
+| starting\_monthly\_payment  | number  | float                                                                      | The monthly payment a borrower is expected to pay _during COVID forbearance_ (which should always be 0.00).                                                                                                              |
+| total\_cost                 | number  | float                                                                      | The sum of total\_paid plus estimated\_tax\_liability owed on total amount\_forgiven. In other words, total\_cost is the bottom line amount a borrower will pay to dispense of their loan on the current Repayment Plan. |
+| total\_paid                 | number  | float                                                                      | The sum of all monthly payments a Borrower will make on a loan's current Repayment Plan over its lifetime.                                                                                                               |
+
+#### Example
+
+RepaymentOption
+
+`{
+  "action_items": [],
+  "amount_forgiven": 0,
+  "annual_snapshots": [],
+  "eligible_loans": [],
+  "estimated_tax_liability": 0,
+  "final_monthly_payment": 0,
+  "ineligible_loans": [],
+  "ineligible_reasons": [
+    "No partial financial hardship",
+    "New Borrower Date is required",
+    "Qualifying PAYE requires Adjusted Gross Income",
+    "Qualifying PAYE requires Residence",
+    "Qualifying PAYE requires Family Size",
+    "No eligible loans"
+  ],
+  "name": "Income-Based (2009)",
+  "number_of_payments": 0,
+  "pslf_eligible": true,
+  "repayment_plan": {
+    "description": "Income Based Repayment Plan (2009)",
+    "idr": true,
+    "name": "IBR",
+    "type": "ibr"
+  },
+  "scheduled_monthly_payment": 0,
+  "starting_monthly_payment": 0,
+  "total_cost": 0,
+  "total_paid": 0
+}
+`

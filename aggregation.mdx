@@ -1,0 +1,58 @@
+---
+title: "LoanSync"
+---
+
+Payitoff has developed proprietary technology that directly connects borrowers to servicers, enabling a new level of data fidelity and student loan functionality. Our LoanSync feature exposes the rich dataset of your users' student loans in a format that's standardized and consistent across all federal loan servicers. We do all the hard work of digesting the discrepancies and filling in COVID-related corrigenda to give you the cleanest, most accurate student loan data on the market.
+
+### How Does It Work?
+
+Our platform uses a variety of sophisticated approaches to data gathering, and builds on our deep knowledge of the student loan landscape to deliver the highest quality data. Other aggregators lack the domain knowledge to properly identify, source, and extract key factors, so they send you whatever they get—garbage in, garbage out.
+
+For instance, we can tell you what a loan's _actual_ interest rate is outside of the COVID forbearance period (_hint: it's not zero!_)
+
+### How Do I Use It?
+
+LoanSync is used in two steps:
+
+1. Link borrowers to their servicer(s) with [Nexus](/docs/nexus)
+2. Fetch their loan portfolio data with the [Portfolios](/docs/api-portfolios) API
+
+To initiate the LoanSync lifecycle, you must first link your users to their servicers. This is accomplished with the `Nexus.link` workflow, so head over to the [Nexus.link](/docs/nexus-link) documentation for details. You display the widget to your users, they enter their credentials for each of their servicers, and we initiate the connection. Once Nexus exits successfully, this step is done. Yay!
+
+After linking servicers, you can then fetch their loan data from our API. Aggregated loans are available at our [Get Portfolio](/reference/get-portfolio) endpoint. This endpoint will return the loans from a borrower's entire portfolio, across all of their servicers. You can also read more about the [Portfolios](/docs/api-portfolios).
+
+### How Often Does the Data Refresh?
+
+Once a user is connected to their servicers, their loan data is updated daily to give you the freshest data. Just hit our [Get Portfolio](/reference/get-portfolio) endpoint for the latest snapshot.
+
+### Which Servicers do you Support?
+
+We currently support over 98% of federal student loans via Fedloan, Nelnet, Navient, and Great Lakes. Additionally, we have evolving support for servicers who handle the remainder of borrowers.
+
+##### Currently supported servicers (servicer.name):
+
+* Aidvantage
+* American Education
+* Aspire
+* CommonBond
+* Discover
+* Earnest
+* ECSI
+* EdFinancial
+* Education Loan Finance
+* FedLoan
+* Firstmark
+* Granite State
+* Great Lakes
+* HESC
+* Laurel Road
+* MOHELA
+* Navient
+* Navy Federal
+* Nelnet
+* OSLA
+* Sallie Mae
+* SoFi
+* UAS
+* VSAC
+* Wells Fargo

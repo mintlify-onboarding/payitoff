@@ -1,0 +1,43 @@
+---
+title: "OriginalLoanSummary"
+description: "Payitoff API: OriginalLoanSummary Schema"
+---
+
+> 📘
+> 
+> Understand `total_paid` vs `total_cost`
+> 
+> **`total_paid`** is the sum of all monthly payments a borrower will make on a loan's current Repayment Plan over its lifetime.
+> 
+> With Income-Driven Repayment plans, there is sometimes a "tax bomb" at the end of their repayment term—any outstanding balance is forgiven, but treated as taxable income. Thus, **`total_cost`** provides the sum of `total_paid` plus the taxes owed on that forgiven amount (which is calculated and provided in the `amount_forgiven` and `estimated_tax_liability` properties). In other words,`total_cost` is the bottom line amount a borrower will pay to dispense of their loan on its current Repayment Plan.
+
+#### Schema Definition
+
+| Property                  | Type    | Format | Description                                                                                                                                                                                                              |
+| ------------------------- | ------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| amount\_forgiven          | number  | float  | Total amount of outstanding Loan balance that will be forgiven at the end of the current Repayment Plan's term.                                                                                                          |
+| estimated\_tax\_liability | number  | float  | Estimated tax bomb, or the amount Borrower will have assessed as income based on total amount forgiven by the current Repayment Plan.                                                                                    |
+| final\_monthly\_payment   | number  | float  | The amount of the final monthly payment.                                                                                                                                                                                 |
+| monthly\_payment          | number  | float  | The standard monthly payment over the course of the repayment term.                                                                                                                                                      |
+| number\_of\_payments      | integer | int32  | Total number of payments that will be made over the course of the repayment term.                                                                                                                                        |
+| outstanding\_interest     | number  | float  | Total unpaid interest.                                                                                                                                                                                                   |
+| outstanding\_principal    | number  | float  | Total unpaid principal.                                                                                                                                                                                                  |
+| total\_cost               | number  | float  | The sum of total\_paid plus estimated\_tax\_liability owed on total amount\_forgiven. In other words, total\_cost is the bottom line amount a borrower will pay to dispense of their loan on the current Repayment Plan. |
+| total\_paid               | number  | float  | The sum of all monthly payments a Borrower will make on a loan's current Repayment Plan over its lifetime.                                                                                                               |
+
+#### Example
+
+OriginalLoanSummary
+
+`{
+  "amount_forgiven": 0.00,
+  "estimated_tax_liability": 0.00,
+  "final_monthly_payment": 0.00,
+  "monthly_payment": 0.00,
+  "number_of_payments": 0,
+  "outstanding_interest": 0.00,
+  "outstanding_principal": 0.00,
+  "total_cost": 0.00,
+  "total_paid": 0.00
+}
+`

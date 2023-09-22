@@ -1,0 +1,58 @@
+---
+title: "Payment"
+description: "Payitoff API: Payment Schema"
+---
+
+A `Payment` is an object that describes a single transfer of funds to a `Servicer` from a `Borrower`\-owned `SourceAccount` on a specific date.
+
+You can [create](/reference/create-payment), [edit](/reference/edit-payment), [list](/reference/list-payments), and [cancel](/reference/cancel-payment) a `Payment`.
+
+#### Creating and Editing a `Payment`
+
+Use the [Create Payment](/reference/create-payment) endpoint to create all `Payment` records. When creating, you'll send a [PaymentPayload](/docs/payment-payload-schema) object as your request body, so be sure to check the guide to better understand how to successfully define your `Payment`.
+
+Use the [Edit Payment](/reference/edit-payment) endpoint to edit existing `Payment` records. Just as when creating, you'll provide a [PaymentPayload](/docs/payment-payload-schema) as your request body.
+
+> ❗️
+> 
+> Don't confuse `Payments`, `PaymentSeries`, and `BatchPayments`!
+> 
+> Our API supports making different kinds of payments on behalf of _one or more_ `Borrowers` from _their own_ bank accounts and from _third-party-owned bank accounts_.
+> 
+> The best way to determine if you should be creating a `Payment`, `PaymentSeries`, or `BatchPayment` is based on how many `Borrowers` you wish to make a payment for, and who owns the funding `SourceAccount`.
+
+#### Do I need a `Payment`, a `PaymentSeries`, or a `BatchPayment`?
+
+| Scenario                                                                                   | SourceAccount Owner                                                                                              | Solution                                     |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| I want to make a payment for _one_ Borrower                                                | The Borrower owns the SourceAccount from which funds will be transferred.                                        | [Payment](/docs/payment-schema)              |
+| I want to make a payment for _one_ Borrower on a regularly recurring schedule every month. | The Borrower owns the SourceAccount from which funds will be transferred.                                        | [PaymentSeries](/docs/payment-series-schema) |
+| I want to make a payment for _one_ Borrower                                                | My business or another third-party owns the SourceAccount from which funds will be transferred.                  | [BatchPayment](/docs/batch-payment-schema)   |
+| I want to make a payment for _many_ Borrowers                                              | My business or another third-party owns the SourceAccount from which funds will be transferred.                  | [BatchPayment](/docs/batch-payment-schema)   |
+| I want to make a payment for _many_ Borrowers                                              | One of the Borrowers owns the SourceAccount from which funds will be transferred to pay for _all_ the Borrowers. | **Not Allowed**                              |
+
+#### Schema Definition
+
+| Property            | Type   | Format                   | Description                                                                                      |
+| ------------------- | ------ | ------------------------ | ------------------------------------------------------------------------------------------------ |
+| amount              | string | decimal                  | The total amount that will be paid on the scheduled\_date.                                       |
+| borrower\_id        | string | uuid                     | A UUID that identifies the Borrower on behalf of whom this Payment is made.                      |
+| id                  | string | uuid                     | A UUID that identifies this Payment.                                                             |
+| scheduled\_date     | string | date                     | Date on which the payment will occur.                                                            |
+| servicer\_id        | string | uuid                     | A UUID that identifies the Servicer who will receive the payment.                                |
+| source\_account\_id | string | uuid                     | A UUID that identifies the _Borrower\-owned_ SourceAccount from which funds will be transferred. |
+| status              | string | pendingcancelledcomplete | The status of the Payment.                                                                       |
+
+#### Example
+
+Payment
+
+`{
+  "amount": "255.75",
+  "borrower_id": "b191438a-5d9e-4135-a509-99f63115e63b",
+  "id": "35a0279c-6b9f-4e0c-b0b2-2c5038cd536d",
+  "scheduled_date": "2021-08-20",
+  "source_account_id": "141da7f0-17a0-4a6e-99e2-f9bcae4d99a3",
+  "status": "pending"
+}
+`

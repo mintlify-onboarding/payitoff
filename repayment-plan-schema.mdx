@@ -1,0 +1,27 @@
+---
+title: "RepaymentPlan"
+description: "Payitoff API: RepaymentPlan Schema"
+---
+
+Every `Loan` in repayment is on a Repayment Plan. While many of our API request payload objects and responses indicate a `repayment_plan_type` as a short, helpful `string` representation of a `Loan`'s current Repayment Plan, the `RepaymentPlan` object provides full details.
+
+#### Schema Definition
+
+| Property    | Type    | Format                                                                                                                               | Description                                                                                                                                                                               |
+| ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| description | string  | A full description of this RepaymentPlan.                                                                                            |                                                                                                                                                                                           |
+| idr         | boolean | Is this an Income-Driven RepaymentPlan?                                                                                              |                                                                                                                                                                                           |
+| name        | string  | The official name of this RepaymentPlan.                                                                                             |                                                                                                                                                                                           |
+| type        | string  | alternativealt\_graduatedalt\_neg\_amalt\_repayeextendedextended\_graduatedgraduatedibricrisrnew\_ibrno\_repaymentpayerepayestandard | The type of RepaymentPlan, often used as shorthand and the value you'd supply in repayment\_plan\_type fields, and to Nexus as the plan argument when starting the Nexus.enroll workflow. |
+
+#### Example
+
+RepaymentPlan
+
+`{
+  "description": "Standard Repayment Plan",
+  "idr": false,
+  "name": "Standard",
+  "type": "standard"
+}
+`

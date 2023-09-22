@@ -1,0 +1,104 @@
+---
+title: "Integrate in 10 Minutes"
+description: "Don't have the time for API-based integration? Nexus has you covered."
+---
+
+If you're looking to add some quick coverage of student loan functionality to your product or platform, but aren't ready to spend the time designing, architecting, and building your own customized borrower experience, Nexus has you covered.
+
+### What you'll need
+
+* A Nexus Key
+* A few lines of JavaScript
+
+<Warning>
+  **Don't have your Nexus Key?**
+
+  Please contact [\[email protected\]](/cdn-cgi/l/email-protection#87f4e6ebe2f4c7f7e6feeef3e8e1e1a9eee8) and we'll get that sorted.
+</Warning>
+
+<Note>
+  **Warning: Don't share your keys!**
+
+  Your API keys are extremely sensitive. Anyone who gains access to your keys will be able to impersonate you and could take money out of your bank accounts. Never expose your API keys in any publicly accessible areas, including GitHub, client-side code, or even a plain HTTP request. If you are ever in doubt that your API keys may have been exposed, contact us immediately!
+</Note>
+
+### What we'll do
+
+* Add the Nexus script tag to a page in your site
+* Initialize Nexus to create a borrower record for you without our API
+* Add a click event listener to trigger the Nexus widget
+* Rely on Nexus to link servicers, provide an assessment, and enroll your borrower in an Income-Driven Repayment Plan
+* Do something meaningful with the results
+
+## Let's get started
+
+#### Add the Nexus `script` tag
+
+You must include the Nexus `script` tag in your app's markup. Where you place it in your markup is up to you, of course, but you must ensure it is included and loaded _before_ any event handlers are triggered.
+
+Add Nexus to your markup
+
+```text Add Nexus to your markup
+<script src="https://payitoff-cdn.io/sandbox/nexus/js/v1"></script>
+```
+
+<Note>
+  **Integration begins in the Payitoff Sandbox**
+  
+  For local development, staging, and testing environments, you'll want to include the **sandbox** version of Nexus.
+
+  Payitoff's Sandbox is your development playground—it will never connect to live Servicer websites, it won't submit real Enrollment Requests, it always returns dummy data where necessary, and you'll use a Sandbox Nexus Key that only works in our Sandbox environment. To use curated dummy data, check out our [guide to using data snapshots](/docs/data-snapshots).
+</Note>
+
+### Initialize Nexus with your own Borrower IDs
+
+The Nexus experience is unique to each of your borrowers based on their loan portfolios, so it requires a borrower identifier on init. To ease API-free integration, you can provide your own unique `borrower` identifier when initializing Nexus. If we've never seen that borrower before, Nexus will create a new `Borrower` record for you. If we have seen the borrower with your unique external ID before, Nexus will recognize that, find the borrower, and load workflows for their situation.
+
+Initialize Nexus with your own borrower ID
+
+```css Initialize Nexus with your own borrower ID
+Nexus({
+  nexus_key: 'GIVINGHERALLSHESGOT',
+  borrower: 'jamestkirk1966'
+})
+```
+
+### Triggering Nexus on a click event
+
+Let's assume we have a button in the page that is meant to trigger opening the Nexus widget:
+
+A simple button to trigger Nexus
+
+```cs A simple button to trigger Nexus
+<a id="nexus" class="button">Enroll via Nexus</a>
+```
+
+Given this button-styled `a` tag in your page, let's write a simple `click` handler that can open Nexus, telling Nexus we want our borrower to be enrolled in an Income-Driven Repayment Plan of their choosing. To do this, we'll also want to provide an `onSuccess` and `onExit` callback function so we can inspect the response from Nexus when the borrower exits the widget.
+
+Trigger Nexus.enroll on click
+
+```java Trigger Nexus.enroll on click
+let nexusButton = document.querySelector('#nexus')
+
+// Attach click handler to invoke Nexus.enroll with callback functions
+nexusButton.addEventListener('click', e => {
+  Nexus.enroll({
+    // the function to call when borrower is done
+    onSuccess: function(response) {
+    	// we'll just console.log our response so we can inspect it
+      console.log(response)
+    },
+    // the function to call when borrower quits or error occurs
+    onExit: function(response) {
+    	// we'll just console.log our response so we can inspect it
+      console.log(response)
+    },
+  })
+})
+```
+
+### That's it!
+
+When the Nexus widget is dismissed, it will call the `onSuccess` or `onExit` callback functions you provided—`onSuccess` if the borrower _completed_ the requested workflow, or `onExit` if they canceled out and dismissed the widget without completing or some other error occurs.
+
+Ready to learn more about Nexus workflows, callbacks, and responses? Head over to our [Nexus](/docs/nexus) pages for all you need to know to better understand how Nexus works, and how you can put it to work in your products and platforms.

@@ -1,0 +1,37 @@
+---
+title: "BatchPaymentAllocation"
+description: "Payitoff API: BatchPaymentAllocation Schema"
+---
+
+An object that identifies if a `BatchPaymentItem.amount` is allocated to a `Servicer` or a specific `PortfolioLoan`.
+
+#### Which `type` should I choose?
+
+| Desired Outcome                                                                                                                                                                               | Allocation Type |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| I want to a make a payment on behalf of a Borrower, and I need the funds to be allocated to a specific PortfolioLoan and/or the PaymentGroup it belongs to.                                   | loan            |
+| I want to make a payment on behalf of a Borrower, and I don't need to allocate it to any specific PortfolioLoan or PaymentGroup, and am happy to let the Servicer allocated the funds for me. | servicer        |
+
+#### Which `id` should I provide?
+
+* When `type` is `loan`, provide the `PortfolioLoan.id` value.
+* When `type` is `servicer`, provide the `PortfolioLoan.servicer.id` value.
+
+#### Schema Definition
+
+Properties in **bold** are required fields.
+
+| Property | Type   | Format       | Description                                                                             |
+| -------- | ------ | ------------ | --------------------------------------------------------------------------------------- |
+| **id**   | string | uuid         | UUID of the Servicer or PortfolioLoan to be paid, depending on type.                    |
+| **type** | string | loanservicer | Identifies if this BatchPaymentItem should be allocated to a Servicer or PortfolioLoan. |
+
+#### Example
+
+BatchPaymentAllocation
+
+`{
+  "id": "75715081-e513-4008-ad68-fa195c9de9f9",
+  "type": "loan"
+}
+`

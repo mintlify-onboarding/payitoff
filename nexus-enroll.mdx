@@ -1,0 +1,194 @@
+---
+title: "Enroll"
+description: "Make enrolling in IDR plans easy with Nexus.enroll"
+---
+
+After you've [linked servicer accounts](/docs/nexus-link) to build a loan portfolio, and [shown an Assessment](/docs/assess) to your `Borrower`, they will be ready to choose and enroll in an IDR Plan. `Nexus.enroll` makes this easy by doing all the hard work for you—providing a simple, easy-to-use experience for borrowers to submit accurate Enrollment Requests that are more likely to be approved quickly by their Servicer(s).
+
+> 📘
+> 
+> Nexus pre-fills information we know about your borrowers
+> 
+> To make things easy for your borrowers, we will pre-fill information required to submit an Enrollment. This means if you're using the API, or if a borrower has used Nexus before, we'll fill in information that's been saved before—like SSN, address, and contact info. We'll still present these steps to the user so they can confirm or correct the information as they proceed through the workflow.
+
+### Calling `Nexus.enroll`
+
+When invoking `Nexus.enroll`, Nexus expects to receive a single `options` object as a parameter. This `options` parameter allows two callback options and an option `plan` name:
+
+* **`plan`** — the IDR Plan in which a `Borrower` wishes to enroll (**optional**; more details below)
+* **`onSuccess`** — a function to execute when the workflow completes successfully
+* **`onExit`** — a function to execute when your borrower exits the workflow or an error occurs
+
+Nexus.enroll
+
+`` // Assuming you have a button your Borrower can click to Enroll
+let enrollButton = document.querySelector('#nexus-enroll-button')
+
+// Attach click handler to invoke Nexus.enroll
+enrollButton.addEventListener('click', e => {
+  Nexus.enroll({
+    // If using API—`repayment_plan.type` from Repayment Options
+    // If using Nexus.assess—`requested_plan.name` from assess response
+    // This field is OPTIONAL
+    plan: 'repaye',
+    // the function to call when borrower is done
+    onSuccess: enrollSuccess,
+    // the function to call when borrower quits or error occurs
+    onExit: enrollExit
+  })
+})
+ ``
+
+![758](/images/7af36f2-nexus-enroll-review-plan.png "nexus-enroll-review-plan.png")
+
+`Nexus.enroll` presenting the IDR plan a user has chosen.
+
+#### `plan` parameter
+
+The `plan` option parameter is **optional** for enrollment to begin. \*You only need to provide `plan` when you know what `plan` your user has chosen to enroll in—for example, when you're building your own Assessment UX, or you are calling `Nexus.assess` and `Nexus.enroll` independently with some kind of UX break in between.
+
+> 👍
+> 
+> Rely on Nexus to do all the things!
+> 
+> **If you want `Nexus.enroll` to handle the entire workflow**, you can _omit_ the `plan` parameter entirely. When you do not provide a `plan` upon invoking `Nexus.enroll`, Nexus will walk your borrower through the entire flow to create an Enrollment Request—we will ask your borrowers to link their servicer accounts, then present all eligible repayment options so borrowers can see which plan saves them the most money, and we'll finish up by walking them through enrolling in the plan once they've chosen a plan they like.
+> 
+> **This is the perfect option when you want your borrowers to submit Enrollment Requests, but don't want to call each Nexus workflow independently.**
+
+**If you are relying on [Nexus.assess](/docs/nexus-assess)** to present borrowers with Repayment Options, you should grab the `requested_plan.name` that is returned from `Nexus.assess` to your callback function.
+
+**If you are building your own Assessment UX**, you're relying on our API to fetch and display Repayment Options to your borrowers. In this case, you **should** provide the `plan` parameter to `Nexus.enroll`, and the value should be a `repayment_plan.type` value from our [Repayment Options](/reference/get-repayment-options) API endpoint.
+
+#### `onSuccess` callback
+
+When your `Borrower` finishes the `Nexus.enroll` workflow—when they answer all questions and submit their new IDR enrollment—Nexus will execute the unary callback function you provide to the `onSuccess` option when invoking `Nexus.enroll`.
+
+Nexus.enroll — onSuccess callback
+
+`` function enrollSuccess(response) {
+  // maybe congratulate your borrower on enrolling in a new IDR Plan!
+  // `response.result` will contain details of the `Enrollment` submission
+  console.log(response)
+}
+ ``
+
+#### `onSuccess` response
+
+Your `onSuccess` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`**—a `string` value indicating the workflow succeeded
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `enrollment`—an ob
+* **`status`**—a `string` value. Will always be **`"complete"`** for an `onSuccess` callback.
+
+##### Example `onSuccess` callback response for `Nexus.enroll`
+
+In the example below, you can see a user completed the workflow and submitted an Enrollment Request.
+
+![758](/images/8213125-nexus-enroll-confirm.png "nexus-enroll-confirm.png")
+
+`Nexus.enroll` presenting confirmation of plan details. Clicking **Enroll Me!** results in the `onSuccess` response below.
+
+Nexus.enroll — onSuccess response
+
+`{
+  message: "Enroll complete.",
+  result: {
+    borrower: {
+      uuid: "4a3f2ae8-b72c-4db6-b46e-f76f72fcc2f7"
+    },
+    enrollment: {
+      created_at: "2021-05-07T16:36:12.051603Z",
+      estimated_approval_date: "2021-07-02",
+      id: 23,
+      repayment_plan: {
+        description: "Revised Pay As You Earn Repayment Plan",
+        type: "repaye"
+      },
+      status: {
+        updated_at: "2021-05-07T16:36:12.055132Z",
+        description: "Submission in Progress",
+        type: "pending"
+      },
+      uuid: "c399298f-47ef-4fab-85b3-6244fca22448"
+    },
+    workflow: "enroll"
+  },
+  status: "complete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**
+
+#### `onExit` callback
+
+When your `Borrower` exits the `Nexus.enroll` workflow—which occurs when they cancel or otherwise dismiss Nexus without completing the `enroll` workflow—Nexus will execute the unary callback function you provide to the `onExit` option when invoking `Nexus.enroll`.
+
+Nexus.enroll — onExit callback
+
+`function enrollExit(response) {
+  switch (response.status) {
+    case "incomplete":
+      // User quit the widget.
+      // Maybe save that they quit so you can prompt them to finish later.
+      break;
+    case "illegal":
+      // You asked to perform a workflow your borrower isn't ready for.
+      // For enrollment, this usually means you didn't show 
+      // Repayment Options, the borrower has no loans, or 
+      // the borrower has no servicers Nexus can link to
+      // submit an Enrollment.
+      break;
+    case "error":
+      // You supplied an invalid Nexus key and/or Borrower UUID,
+      // or an error occurred in Nexus/Payitoff.
+      break;
+  }
+}
+`
+
+#### `onExit` response
+
+Your `onExit` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`** — a `string` indicating what occurred to trigger the exit
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed. **If you're relying on Nexus to create borrowers for you, you will want to save the `uuid` that is returned so you can make API calls on behalf of your borrowers.**  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `workflow`—an optional `string` value indicating what workflow a borrower was in when they exited Nexus, if they decided to bail out. Should always be present when `status` is `"incomplete"`.
+* **`status`** — a `string` value that is one of the following values:  
+   * `"error"` — Nexus received an invalid `nexus_key`, `uuid`, or encountered some other error  
+   * `"illegal"` — You have attempted to perform an action for a borrower that is not allowed, or for which the borrower is not currently ready  
+   * `"incomplete"` — Your borrower quit the widget without completing the requested workflow
+
+##### Example `onExit` callback response for `Nexus.enroll`
+
+In the example below, you can see a user quit the widget during assessment, before choosing a plan, thus the requested Enroll workflow is incomplete.
+
+Nexus.enroll — onExit response
+
+`{
+  message: "You didn't complete your enrollment.",
+  result: {
+    borrower: {
+      uuid: "9e0cc73c-d450-44ea-857a-3030d3674572"
+    },
+    workflow: "enroll"
+  },
+  status: "incomplete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**
+
+> 📘
+> 
+> Knowing where your borrower left off
+> 
+> We know it can be helpful to know if your borrower quit a workflow you'd like them to complete to keep using your products and services. To that end, we recommend you catch the `incomplete` status and store it in your own systems. This can provide you a helpful trigger point for notifying your users to come back and otherwise prompt them to finish linking their Servicers.

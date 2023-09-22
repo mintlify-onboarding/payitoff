@@ -1,0 +1,37 @@
+---
+title: "EnrollmentPayload"
+description: "Payitoff API: EnrollmentPayload Schema"
+---
+
+To create an `Enrollment` for a `Borrower`, use our [Create an Enrollment](/reference/create-enrollment) API endpoint with an `EnrollmentPayload`. 
+
+**NOTE:** The following fields are required:
+
+* `repayment_plan`
+* `signature`
+
+> 🚧
+> 
+> Use `EnrollmentPayload` for to create an `Enrollment`
+> 
+> When creating `Enrollment` objects via API, send an `EnrollmentPayload` as your request body. You'll receive an [Enrollment](/docs/enrollment-schema) as a response.
+
+#### Schema Definition
+
+Properties in **bold** are required.
+
+| Property            | Type    | Format                                                                                                                                 | Description                                                                                                                     |
+| ------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **repayment\_plan** | string  | savepayerepayeibrnew\_ibricr                                                                                                           | The Income-Driven Repayment Plan a borrower wishes to enroll in. Should be a repayment\_plan.type value from a RepaymentOption. |
+| **signature**       | boolean | Does the borrower grant the Partner company (you) and Payitoff the right to process and submit an IDR Enrollment form on their behalf? |                                                                                                                                 |
+| cursive\_signature  | boolean | Should the borrower's signature be in cursive or typed format on the submitted IDR Enrollment form?_Defaults to true._                 |                                                                                                                                 |
+
+#### Example
+
+EnrollmentPayload
+
+`{
+  "repayment_plan": "paye",
+  "signature": true
+}
+`

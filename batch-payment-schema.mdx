@@ -1,0 +1,112 @@
+---
+title: "BatchPayment"
+description: "Payitoff API: BatchPayment Schema"
+---
+
+A `BatchPayment` is an object representing the transfer of funds from a third-party, usually business-owned, `SourceAccount ` to many `PortfolioLoans` and/or `Servicer` accounts on behalf of many `Borrowers`.
+
+#### Creating `BatchPayments`
+
+Use the [Create BatchPayments](/reference/create-batch-payment) endpoint to create all `BatchPayment` records. When creating, you'll send a [BatchPaymentPayload](/docs/batch-payment-payload-schema) object, so be sure to check the guide to better understand how to successfully detail your batch and all associated payments.
+
+> ❗️
+> 
+> Don't confuse `Payments`, `PaymentSeries`, and `BatchPayments`!
+> 
+> Our API supports making different kinds of payments on behalf of _one or more_ `Borrowers` from _their own_ bank accounts and from _third-party-owned bank accounts_.
+> 
+> The best way to determine if you should be creating a `Payment`, `PaymentSeries`, or `BatchPayment` is based on how many `Borrowers` you wish to make a payment for, and who owns the funding `SourceAccount`.
+
+#### Do I need a `Payment`, a `PaymentSeries`, or a `BatchPayment`?
+
+| Scenario                                                                                   | SourceAccount Owner                                                                                              | Solution                                     |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| I want to make a payment for _one_ Borrower                                                | The Borrower owns the SourceAccount from which funds will be transferred.                                        | [Payment](/docs/payment-schema)              |
+| I want to make a payment for _one_ Borrower on a regularly recurring schedule every month. | The Borrower owns the SourceAccount from which funds will be transferred.                                        | [PaymentSeries](/docs/payment-series-schema) |
+| I want to make a payment for _one_ Borrower                                                | My business or another third-party owns the SourceAccount from which funds will be transferred.                  | [BatchPayment](/docs/batch-payment-schema)   |
+| I want to make a payment for _many_ Borrowers                                              | My business or another third-party owns the SourceAccount from which funds will be transferred.                  | [BatchPayment](/docs/batch-payment-schema)   |
+| I want to make a payment for _many_ Borrowers                                              | One of the Borrowers owns the SourceAccount from which funds will be transferred to pay for _all_ the Borrowers. | **Not Allowed**                              |
+
+#### Schema Definition
+
+| Property             | Type   | Format                                                                         | Description                                                                                                                                                            |
+| -------------------- | ------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| created\_at          | string | date-time                                                                      | An ISO DateTime string indicating when this BatchPayment was created.                                                                                                  |
+| errors               | array  | string                                                                         | A list of errors, if any, associated with this BatchPayment.                                                                                                           |
+| id                   | string | uuid                                                                           | The UUID that identifies a BatchPayment.                                                                                                                               |
+| number\_of\_payments | number | integer                                                                        | The number of payments associated with this BatchPayment._Will equal the number of [BatchPaymentItem](/docs/batch-payment-item-schema) objects in the payments array._ |
+| payments             | array  | [BatchPaymentItem](/docs/batch-payment-item-schema)                            | A list of payments associated with this batch._NOTE: Only present when the batch is valid and being fetched individually._                                             |
+| raw\_params          | object | [BatchPaymentPayload](/docs/batch-payment-payload-schema)                      | The original request parameters. Only present when the original BatchPaymentPayload was invalid.                                                                       |
+| reference\_id        | string | The reference\_id value provided on batch creation in the BatchPaymentPayload. |                                                                                                                                                                        |
+| source\_account      | object | [SourceAccount](/docs/source-account-schema)                                   | The SourceAccount used for this BatchPayment.                                                                                                                          |
+| status               | string | pendingunreconciledcomplete                                                    | The current status of this BatchPayment.                                                                                                                               |
+| total\_amount        | string | decimal                                                                        | The total amount of the BatchPayment.                                                                                                                                  |
+
+#### Example
+
+BatchPayment
+
+`{
+  "created_at": "2022-01-31T19:58:22.894258Z",
+  "errors": null,
+  "id": "24b31b5c-4357-4245-a36e-b52217f6cbab",
+  "number_of_payments": 4,
+  "payments": [
+    {
+      "allocation": {
+        "id": "35baee60-ad52-4715-b521-6096b1d391fe",
+        "type": "loan"
+      },
+      "amount": "1.00",
+      "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+      "id": "3a5a83bd-ae47-4ed6-8cf9-946d0856bd7f",
+      "reference_id": null,
+      "status": "pending"
+    },
+    {
+      "allocation": {
+        "id": "952bd015-8f28-4bb0-95b3-45bc3a7b8448",
+        "type": "loan"
+      },
+      "amount": "1.00",
+      "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+      "id": "51f483b1-1b32-4c80-9a18-37c90b050f62",
+      "reference_id": null,
+      "status": "pending"
+    },
+    {
+      "allocation": {
+        "id": "75715081-e513-4008-ad68-fa195c9de9f9",
+        "type": "loan"
+      },
+      "amount": "1.00",
+      "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+      "id": "fd3acad2-5e34-4718-bbe6-212a55cb4cbf",
+      "reference_id": null,
+      "status": "pending"
+    },
+    {
+      "allocation": {
+        "id": "af86266e-820d-4bc9-9a6e-b8a1ef9f2ad5",
+        "type": "loan"
+      },
+      "amount": "1.00",
+      "borrower_id": "b72c6b71-5eaa-42e8-bd1b-7b0f12caea4c",
+      "id": "63e9e51f-e51a-4801-b1e5-d9a6b9129c22",
+      "reference_id": null,
+      "status": "pending"
+    }
+  ],
+  "reference_id": null,
+  "source_account": {
+    "account_number_last_4": "2374",
+    "id": "976833b7-ea14-4b07-ba4c-cf5a24477b6d",
+    "name_on_account": "Your Business, Inc.",
+    "payments_supported": true,
+    "routing_number": "123456789",
+    "type": "checking"
+  },
+  "status": "pending",
+  "total_amount": "4.00"
+}
+`

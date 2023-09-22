@@ -1,0 +1,107 @@
+---
+title: "Loans"
+description: "All you need to know about Loans and Repayment Plans"
+---
+
+## Retrieving Loans for your Borrowers
+
+When you wish to fetch your borrowers' `Loan` objects, you'll use our [List Borrower Loans](/reference/get-loans) API endpoint.
+
+The response is a simple object with a `loans` key, which provides an array of [Loan](/docs/loan-schema) objects:
+
+JSON
+
+`{
+  "loans": [
+    {Loan},
+    {Loan}
+  ]
+}
+`
+
+## Creating Loans for your Borrowers
+
+There are four ways to build up `Loan` objects for a `Borrower`, in order of convenience and accuracy: 
+
+1. Use Nexus and let us do the heavy lifting (_recommended_)
+2. Upload a base64-encoded National Student Loan Data System (NSLDS) MyStudentData (MSD) file
+3. `POST` an `array` of [LoanPayload](/docs/loan-payload-schema) objects
+4. `POST` data retrieved via Plaid Liabilities as an `array` of [LoanPayload](/docs/loan-payload-schema) objects
+
+#### Use Nexus for accurate, up-to-date `Loan` data
+
+Nexus is our easy-to-use, drop-in JavaScript widget that walks your borrowers through directly linking their Servicer accounts with their `Borrower` records you've already created via our API.
+
+When you present Nexus to your borrowers, they will authenticate with all of their Servicer accounts, and we will build their entire loan portfolio with the most accurate and up-to-date information available.
+
+> 👍
+> 
+> Get started with Nexus in 1 day
+> 
+> Check out our [One-day Integration Guide](/docs/one-day-integration-guide) for more information on how to integrate Nexus in your app today.
+
+#### Upload an MSD file with federal loan data
+
+If you cannot use Nexus in your workflows at this time, we recommend creating loans via MSD file uploads, as it gives us info on the Borrower's entire portfolio of federal student loans. It also provides richer data on the loans themselves, which results in better Repayment and Forgiveness calculations. 
+
+The downside of MSD files is that they do not include private loans, and there are currently some outstanding questions raised by the in-progress Scam Bill regarding accessing this information on behalf of your borrowers. 
+
+To upload an MSD file, you'll use the [Create Loans for a Borrower](/reference/create-loans) API endpoint with a [LoansFilePayload](/docs/loans-file-payload-schema).
+
+> ❗️
+> 
+> MSD Upload Gotchas
+> 
+> 1. When an MSD file is uploaded, our system will **destroy** _all existing loans_ created by a previous MSD upload and create new ones from the current upload. `Loans` created via API will not be deleted, however. The thinking is that a user can continue to idempotently refresh their federal student loans without affecting private loans created separately via API.
+> 2. Our system does not respect the File Request Date in the MSD file. It is perfectly legal to upload an earlier version of an MSD file. Doing so will result in existing MSD-created loans to be destroyed, even if their data is more up to date.
+> 3. MSD files must be uploaded as a [LoansFilePayload](/docs/loans-file-payload-schema), in which the MSD file itself is provided as a base64-encoded string value.
+> 4. If your use case includes private loans, you _must_ ask your `Borrower` to supply their private loan information or gather that data via another source (such as Nexus or Plaid). MSD files _only_ provide federal student loan data.
+
+#### Use loan data collected from borrowers
+
+`Loan` objects can be manually created by asking your `Borrower` to fill out a series of fields to gather info about the `Loan`—name, monthly payment, original principal, Repayment Plan, and more.
+
+**When `POST`ing an `array` of `LoanPayload` objects, it’s important to send over _all_ of the Borrower's federal loans, including those that have a zero balance and are paid in full, as their types can affect Repayment Options.**
+
+> 🚧
+> 
+> Beware of relying on your borrowers for accurate `Loan` data
+> 
+> We don't recommend relying on your borrowers providing their `Loan` data via forms, as it is very tedious, especially for those who may have many loans. More importantly, it is quite error-prone to rely entirely on your `Borrower` providing accurate and up-to-date information on their loan portfolio.
+> 
+> Check out our [One-day Integration Guide](/docs/one-day-integration-guide) to learn how Nexus can take care of the heavy lifting for you and your borrowers.
+
+#### Use loan data from Plaid
+
+Some of our Partners use the Plaid `/liabilities` endpoint to gather the data needed to create `Loans` for their borrowers. This data should be passed in to our regular [Create Loans](/reference/create-loans) endpoint. 
+
+For Enrollment processing, we require a Servicer Name for each loan. The Servicer is the same as the Institution that Plaid fetches loan data from. Examples include Navient, Nelnet, and Fedloan for federal loans, and Wells Fargo for private loans.
+
+We also accept an `external_id` you can use to keep track of which `Loans` in Payitoff correspond to the loan info you receive from subsequent syncs with Plaid. We recommend using Plaid's `account_id` property as the `external_id` for a Payitoff `Loan`—so be sure to send that in your [LoanPayload](/docs/loan-payload-schema) when you create `Loans`.
+
+Below is a table mapping PIO loan attributes to what you'll receive from Plaid. Please [consult Plaid's documentation](https://plaid.com/docs/#liabilities) for more info.
+
+##### PIO <> Plaid Loan data mapping
+
+| PIO Property           | Plaid Property                        | Example Value                  |
+| ---------------------- | ------------------------------------- | ------------------------------ |
+| external\_id           | ls\[\].account\_id                    | vokyE5Rn6vHKqDLRXEn5fne7Lw     |
+| interest\_rate         | ls\[\].interest\_rate\_percentage     | 18.25                          |
+| loan\_type             | ls\[\].loan\_name                     | Direct Subsidized Stafford     |
+| loan\_status           | ls\[\].loan\_status.type              | repayment                      |
+| original\_principal    | ls\[\].origination\_principal\_amount | 12345.6                        |
+| origination\_date      | ls\[\].origination\_date              | 2017-04-21                     |
+| outstanding\_interest  | ls\[\].outstanding\_interest\_amount  | 123.45                         |
+| outstanding\_principal | ls\[\].balances.current               | 110                            |
+| disbursement\_dates    | ls\[\].disbursement\_dates            | \["2017-05-20", "2017-06-20"\] |
+| monthly\_payment       | ls\[\].last\_payment\_amount          | 420                            |
+| repayment\_plan\_type  | ls\[\].repayment\_plan.description    | STANDARD REPAYMENT             |
+| servicer\_name         | institution\_name                     | Nelnet                         |
+
+> 🚧
+> 
+> A couple notes about Plaid data mapping
+> 
+> A Plaid Liabilities response includes a `liabilities.student` property, which is an `array` of loan data objects. The _Plaid Property_ in the mapping table above indicates the property of each object _within_ the `liabilities.student` array, and each object property within the `array` is indicated as `ls[].<property>`.
+> 
+> **NOTE:** You may spot a `minimum_payment_amount` property in Plaid's response. We advise against using this value, as it returns data inconsistently across Servicers.

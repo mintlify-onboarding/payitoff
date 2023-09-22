@@ -1,0 +1,201 @@
+---
+title: "Link"
+description: "How to get the most out of Nexus.link"
+---
+
+To get the most accurate and up-to-date loan portfolio for your `Borrower`, you should use `Nexus.link` to prompt your `Borrower` to connect all the Servicers they pay monthly. We'll do the heavy lifting of building their entire loan portfolio for you.
+
+> 🚧
+> 
+> `Nexus.linkServicers` deprecated. Use `Nexus.link` instead.
+> 
+> Originally, Nexus launched with servicer account-linking offered through the `linkServicers` function. That function has now been renamed to `Nexus.link`. This isn't a breaking change at this point, as the `linkServicers` function call will still succeed. But we will remove `linkServicers` in a future update, so we encourage you to update your code to call `Nexus.link` at this time.
+
+### Calling `Nexus.link`
+
+`Nexus.link` expects to receive a single `options` object as a parameter. This `options` object allows you to specify two possible callbacks:
+
+* **`onSuccess`** — a function to execute when the workflow completes successfully
+* **`onExit`** — a function to execute when your borrower exits the workflow or an error occurs
+
+Calling Nexus.link
+
+`// Assuming you have a button your Borrower can click to link Servicers
+let linkButton = document.querySelector('#nexus-link-button')
+
+// Attach click handler to invoke Nexus.link
+linkButton.addEventListener('click', e => {
+  Nexus.link({
+    // the function to call when borrower is done
+    onSuccess: linkSuccess,
+    // the function to call when borrower quits or error occurs
+    onExit: linkExit
+  })
+})
+`
+
+![764](/images/edcdcb7-nexus-servicers.png "nexus-servicers.png")
+
+`Nexus.link` asking a borrower to connect their servicer account(s).
+
+#### `onSuccess` callback
+
+When your `Borrower` finishes the `Nexus.link` workflow—which occurs when they click the **I'm Done** button after connecting their servicer accounts—Nexus will execute the unary callback function you provide to the `onSuccess` option when invoking `Nexus.link`.
+
+Nexus.link — onSuccess callback
+
+`function linkSuccess(response) {
+  // maybe congratulate your borrower on linking their Servicers!
+  console.log('Servicers linked')
+  console.log(response)
+}
+`
+
+#### `onSuccess` response
+
+Your `onSuccess` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`**—a `string` value indicating the workflow succeeded
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed.  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls
+* **`status`**—a `string` value. Will always be **`"complete"`** for an `onSuccess` callback.
+
+##### Example `onSuccess` callback response for `Nexus.link`
+
+In the example below, you can see a user completed linking servicers and clicked the **I'm Done** button to close the widget.
+
+Nexus.link — onSuccess response
+
+`{
+  message: "Link complete.",
+  result: {
+    borrower: {
+      uuid: "9e0cc73c-d450-44ea-857a-3030d3674572"
+    },
+    workflow: "link"
+  },
+  status: "complete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**
+
+#### `onExit` callback
+
+When your `Borrower` exits the `Nexus.link` workflow—which occurs when they cancel or otherwise dismiss Nexus without completing the `link` workflow—Nexus will execute the unary callback function you provide to the `onExit` option when invoking `Nexus.link`.
+
+Nexus.link — onExit callback
+
+`function linkExit(response) {
+  switch (response.status) {
+    case "incomplete":
+      // User quit the widget.
+      // Maybe save that they quit so you can prompt them to finish later.
+      break;
+    case "illegal":
+      // You asked to perform a workflow your borrower isn't ready for.
+      break;
+    case "error":
+      // You supplied an invalid Nexus key and/or Borrower UUID,
+      // or an error occurred in Nexus/Payitoff.
+      break;
+  }
+}
+`
+
+#### `onExit` response
+
+Your `onExit` callback function should expect a single object with additional information you can inspect. The Nexus response will contain **three** properties:
+
+* **`message`** — a `string` indicating what occurred to trigger the exit
+* **`result`** —an `object` that provides additional details and may change over time.  
+   * `borrower`—an `object` that provides additional details on the borrower for whom the Nexus workflow was performed. **If you're relying on Nexus to create borrowers for you, you will want to save the `uuid` that is returned so you can make API calls on behalf of your borrowers.**  
+         * `uuid`—the unique Payitoff UUID that identifies this borrower for API and Nexus calls  
+   * `workflow`—an optional `string` value indicating what workflow a borrower was in when they exited Nexus, if they decided to bail out. Should always be present when `status` is `"incomplete"`.
+* **`status`** — a `string` value that is one of the following values:  
+   * `"error"` — Nexus received an invalid `nexus_key`, `uuid`, or encountered some other error  
+   * `"illegal"` — You have attempted to perform an action for a borrower that is not allowed, or for which the borrower is not currently ready  
+   * `"incomplete"` — Your borrower quit the widget without completing the requested workflow
+
+##### Example `onExit` callback response for `Nexus.link`
+
+In the example below, you can see a user did not complete linking servicers and chose to exit the widget.
+
+Nexus.link — onExit response
+
+`{
+  message: "You didn't complete linking your servicers.",
+  result: {
+    borrower: {
+      uuid: "9e0cc73c-d450-44ea-857a-3030d3674572"
+    },
+    workflow: "link"
+  },
+  status: "incomplete"
+}
+`
+
+> 📘
+> 
+> **If you're relying on Nexus to create borrowers for you, you will want to save the `borrower.uuid` that is returned so you can make API calls on behalf of your borrowers.**
+
+> 📘
+> 
+> Knowing where your borrower left off
+> 
+> We know it can be helpful to know if your borrower quit a workflow you'd like them to complete to keep using your products and services. To that end, we recommend you catch the `incomplete` status and inspect `result.workflow` to know when they exited. This can provide you a helpful trigger point for notifying your users to come back and otherwise prompt them to finish linking their servicer accounts.
+
+### Simulate authentication scenarios
+
+While you're in development/testing against our sandbox environment, Nexus helps you simulate a few different user experience scenarios.
+
+> 📘
+> 
+> Remember that requests made in our Sandbox environment **do not** go through to the actual servicers, they return some form of dummy data. Only requests in production will go to a servicer. To use curated dummy data, check out our [guide to using data snapshots](/docs/data-snapshots).
+
+![762](/images/ccc0585-nexus-login.png "nexus-login.png")
+
+`Nexus.link` asking a user to login.
+
+#### Login _without_ challenge question (_default experience_)
+
+It's possible to simulate authenticating (or re-authenticating) with a servicer and not being asked a challenge question. This is the default expectation for Nexus, so **any username and password value,** other than the special values detailed below, will result in this workflow.
+
+#### Simulate a _failed_ login
+
+It's possible to simulate the experience of a user entering invalid credentials for their servicer(s). You can test the error state with **one or both** of the following special credentials:
+
+* username: `bad`
+* password: `bad`
+
+_You do not need to use both values—sending either `bad` as the `username` **or** `password` value will result in failing to connect to a servicer._
+
+#### Simulate login _with_ challenge question
+
+It's possible to simulate the experience of authenticating with a servicer that asks the user to answer a challenge question. To do so, use the following special credentials:
+
+* username: `challenge`
+* password: _any password value will be accepted_
+
+![758](/images/e7b611e-nexus-challenge.png "nexus-challenge.png")
+
+`Nexus.link` presenting a challenge question to authenticate an account.
+
+#### Simulate a failed _challenge_
+
+It's possible to simulate the experience of authenticating with a servicer that asks the user to answer a challenge question, and failing to answer the question correctly. To do so, use the following special credentials:
+
+* username: `fail-challenge`
+* password: _any password value will be accepted_
+
+#### `Nexus.link` simulated authentication scenarios
+
+| Username       | Password    | Experience                                                                          |
+| -------------- | ----------- | ----------------------------------------------------------------------------------- |
+| bad            | bad         | Login will not succeed. Only 1 input needs to have the value bad for login to fail. |
+| challenge      | _any value_ | Login and asked a challenge question.                                               |
+| fail-challenge | _any value_ | Login, asked a challenge question, and fail the challenge answer.                   |
+| _any value_    | _any value_ | Login successfully without a challenge question.                                    |

@@ -1,0 +1,36 @@
+---
+title: "Transaction"
+description: "Payitoff API: Transaction Schema"
+---
+
+A transaction between a borrower and servicer. Typically a payment, refund, adjustment or interest capitalization.
+
+#### Schema Definition
+
+| Property            | Type   | Format                                 | Description                                              |
+| ------------------- | ------ | -------------------------------------- | -------------------------------------------------------- |
+| date                | string | date                                   | Date on which the borrower's transaction occurred.       |
+| fees                | string | decimal                                | The fees in dollars associated with a transaction.       |
+| interest            | string | decimal                                | The interest in dollars associated with a transaction.   |
+| loan\_ids           | array  | type: stringformat: uuid               | Array of Loan IDs associated with a transaction          |
+| payment\_group\_ids | array  | type: stringformat: uuid               | Array of Payment Group IDs associated with a transaction |
+| type                | string | The type of transaction with servicer. |                                                          |
+
+#### Example
+
+Transaction
+
+`{
+  "date": "2020-10-14",
+  "fees": "0.00",
+  "interest": "0.00",
+  "loan_ids": [
+    "86e23c92-4882-4de7-b86e-2e1c8d161b4d",
+    "9949c62f-4ddb-4ee6-afbe-e40ff4dabc8b"
+  ],
+  "payment_group_ids": [],
+  "principal": "-200.00",
+  "total": "-200.00",
+  "type": "payment"
+}
+`
